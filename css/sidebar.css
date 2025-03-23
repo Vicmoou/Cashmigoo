@@ -10,6 +10,7 @@
     z-index: 1000;
     overflow-y: auto;
     transition: transform 0.3s ease;
+    transform: none;
 }
 
 .sidebar-logo {
@@ -83,6 +84,7 @@
     .sidebar {
         transform: translateX(-100%);
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
     }
 
     .sidebar.active {
@@ -91,6 +93,7 @@
 
     .main-content {
         margin-left: 0;
+        width: 100%;
     }
 
     .menu-toggle {
