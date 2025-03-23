@@ -51,29 +51,32 @@ function getMonthlyData(filteredTransactions) {
 
 // Add theme-aware chart configuration
 function updateChartTheme() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    
-    Chart.defaults.color = isDark ? '#e2e8f0' : '#64748b';
-    Chart.defaults.borderColor = isDark ? '#334155' : '#e2e8f0';
-    
-    const chartColors = {
-        income: isDark ? '#059669' : '#10b981',
-        expense: isDark ? '#dc2626' : '#ef4444',
-        balance: isDark ? '#3b82f6' : '#2563eb'
-    };
+    try {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        
+        Chart.defaults.color = isDark ? '#e2e8f0' : '#64748b';
+        Chart.defaults.borderColor = isDark ? '#334155' : '#e2e8f0';
+        
+        const chartColors = {
+            income: isDark ? '#059669' : '#10b981',
+            expense: isDark ? '#dc2626' : '#ef4444'
+        };
 
-    if (window.categoryChart) {
-        categoryChart.options.plugins.legend.labels.color = isDark ? '#e2e8f0' : '#64748b';
-        categoryChart.update();
-    }
-    if (window.monthlyChart) {
-        monthlyChart.data.datasets[0].backgroundColor = chartColors.income;
-        monthlyChart.data.datasets[1].backgroundColor = chartColors.expense;
-        monthlyChart.update();
-    }
-    if (window.comparisonChart) {
-        comparisonChart.data.datasets[0].backgroundColor = [chartColors.income, chartColors.expense];
-        comparisonChart.update();
+        ['categoryChart', 'monthlyChart', 'comparisonChart'].forEach(chartId => {
+            const chart = Chart.getChart(document.getElementById(chartId));
+            if (chart) {
+                if (chart.config.type === 'pie' || chart.config.type === 'doughnut') {
+                    chart.options.plugins.legend.labels.color = isDark ? '#e2e8f0' : '#64748b';
+                } else if (chart.config.type === 'bar') {
+                    chart.data.datasets.forEach((dataset, index) => {
+                        dataset.backgroundColor = index === 0 ? chartColors.income : chartColors.expense;
+                    });
+                }
+                chart.update();
+            }
+        });
+    } catch (error) {
+        console.error('Error updating chart theme:', error);
     }
 }
 
@@ -248,7 +251,7 @@ document.getElementById('logoutBtn').addEventListener('click', (e) => {
 // Listen for theme changes
 window.addEventListener('storage', (e) => {
     if (e.key === `theme_${currentUser.id}`) {
-        updateChartTheme();
+        setTimeout(updateChartTheme, 100); // Small delay to ensure theme is applied
     }
 });
 
@@ -264,9 +267,16 @@ window.addEventListener('transactionsUpdated', () => {
 // Initial chart theme update
 updateChartTheme();
 
-// Ensure DOM is loaded before initializing
+// Theme and data initialization
 document.addEventListener('DOMContentLoaded', () => {
-    timeRangeSelect.addEventListener('change', updateCharts);
-    exportBtn.addEventListener('click', exportToCSV);
-    updateCharts();
+    try {
+        ThemeManager.init();
+        updateChartTheme();
+        timeRangeSelect.addEventListener('change', updateCharts);
+        exportBtn.addEventListener('click', exportToCSV);
+        updateCharts();
+    } catch (error) {
+        console.error('Initialization error:', error);
+        alert('Failed to initialize reports. Please refresh the page.');
+    }
 });
