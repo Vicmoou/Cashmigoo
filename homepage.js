@@ -32,16 +32,16 @@ function formatAmount(amount) {
 }
 
 // Initialize data
-const transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
-const userTransactions = transactions.filter(t => t.userId === currentUser.id);
+let transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+let userTransactions = transactions.filter(t => t.userId === currentUser.id);
 
 // Calculate summary data
-const totalBalance = userTransactions.reduce((acc, t) => 
+let totalBalance = userTransactions.reduce((acc, t) => 
     t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
-const monthlyIncome = userTransactions.filter(t => 
+let monthlyIncome = userTransactions.filter(t => 
     t.type === 'income' && new Date(t.date).getMonth() === new Date().getMonth())
     .reduce((acc, t) => acc + t.amount, 0);
-const monthlyExpenses = userTransactions.filter(t => 
+let monthlyExpenses = userTransactions.filter(t => 
     t.type === 'expense' && new Date(t.date).getMonth() === new Date().getMonth())
     .reduce((acc, t) => acc + t.amount, 0);
 
@@ -176,6 +176,29 @@ function renderRecentTransactions() {
         `).join('') : 
         '<p class="no-transactions">No recent transactions</p>';
 }
+
+// Add transaction update listener
+window.addEventListener('transactionsUpdated', () => {
+    // Reload transactions
+    transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+    userTransactions = transactions.filter(t => t.userId === currentUser.id);
+
+    // Recalculate totals
+    totalBalance = userTransactions.reduce((acc, t) => 
+        t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
+    
+    monthlyIncome = userTransactions.filter(t => 
+        t.type === 'income' && new Date(t.date).getMonth() === new Date().getMonth())
+        .reduce((acc, t) => acc + t.amount, 0);
+    
+    monthlyExpenses = userTransactions.filter(t => 
+        t.type === 'expense' && new Date(t.date).getMonth() === new Date().getMonth())
+        .reduce((acc, t) => acc + t.amount, 0);
+
+    // Update display
+    updateDisplayAmounts();
+    renderRecentTransactions();
+});
 
 // Initial display update
 updateDisplayAmounts();

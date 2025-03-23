@@ -36,3 +36,20 @@ window.addEventListener('storage', (e) => {
 
 // Initial chart theme update
 updateChartTheme();
+
+// Add transaction update listener
+window.addEventListener('transactionsUpdated', () => {
+    const transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+    updateReports(transactions);
+});
+
+function updateReports(transactions) {
+    // Update charts with new data
+    updateChartData(transactions);
+    
+    // Update totals
+    updateTotals(transactions);
+    
+    // Refresh report displays
+    updateChartTheme();
+}
