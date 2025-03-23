@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cashmigo - Personal Finance Manager</title>
+    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">Cashmigo</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="homepage.html" class="nav-link active">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="accounts.html" class="nav-link">
+                    <i class="fas fa-wallet"></i> Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="transactions.html" class="nav-link">
+                    <i class="fas fa-exchange-alt"></i> Transactions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="categories.html" class="nav-link">
+                    <i class="fas fa-tags"></i> Categories
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="budget.html" class="nav-link">
+                    <i class="fas fa-chart-pie"></i> Budget
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="debt%20or%20loan.html" class="nav-link">
+                    <i class="fas fa-hand-holding-usd"></i> Debt/Loans
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="reports%20and%20tools.html" class="nav-link">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" id="logoutBtn" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <nav class="main-nav">
+            <div class="logo">Cashmigo</div>
+            <div class="currency-selector">
+                <select id="currencySelector">
+                    <option value="USD">$ USD</option>
+                    <option value="EUR">€ EUR</option>
+                    <option value="AOA">Kz AOA</option>
+                    <option value="BRL">R$ BRL</option>
+                </select>
+            </div>
+            <ul>
+                <li><a href="homepage.html" class="active">Dashboard</a></li>
+                <li><a href="accounts.html">Accounts</a></li>
+                <li><a href="transactions.html">Transactions</a></li>
+                <li><a href="categories.html">Categories</a></li>
+                <li><a href="budget.html">Budget</a></li>
+                <li><a href="debt%20or%20loan.html">Debt/Loans</a></li>
+                <li><a href="reports%20and%20tools.html">Reports</a></li>
+                <li><a href="#" id="logoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+        
+        <main class="dashboard">
+            <section class="summary-cards">
+                <div class="card total-balance glass-effect">
+                    <div class="card-icon">
+                        <svg><!-- Add wallet icon --></svg>
+                    </div>
+                    <h3>Total Balance</h3>
+                    <div class="amount" id="totalBalance">$0.00</div>
+                    <div class="card-trend">
+                        <span class="trend-up">↑ 12%</span> vs last month
+                    </div>
+                </div>
+                <div class="card monthly-income glass-effect">
+                    <div class="card-icon">
+                        <svg><!-- Add income icon --></svg>
+                    </div>
+                    <h3>Monthly Income</h3>
+                    <div class="amount" id="monthlyIncome">$0.00</div>
+                    <div class="card-trend">
+                        <span class="trend-up">↑ 8%</span> vs last month
+                    </div>
+                </div>
+                <div class="card monthly-expenses glass-effect">
+                    <div class="card-icon">
+                        <svg><!-- Add expenses icon --></svg>
+                    </div>
+                    <h3>Monthly Expenses</h3>
+                    <div class="amount" id="monthlyExpenses">$0.00</div>
+                    <div class="card-trend">
+                        <span class="trend-down">↓ 5%</span> vs last month
+                    </div>
+                </div>
+            </section>
+
+            <section class="charts-section">
+                <div class="card chart-container glass-effect">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+                <div class="card chart-container glass-effect">
+                    <canvas id="balanceChart"></canvas>
+                </div>
+            </section>
+
+            <section class="recent-transactions">
+                <h2>Recent Transactions</h2>
+                <div id="recentTransactionsList"></div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/themeManager.js"></script>
+    <script>ThemeManager.init();</script>
+    <script src="homepage.js"></script>
+</body>
+</html>

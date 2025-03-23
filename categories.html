@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories - Cashmigo</title>
+    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="categories.css">
+    <link rel="stylesheet" href="modals.css">
+    <link rel="stylesheet" href="shared-styles.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">Cashmigo</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="homepage.html" class="nav-link">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="accounts.html" class="nav-link">
+                    <i class="fas fa-wallet"></i> Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="transactions.html" class="nav-link">
+                    <i class="fas fa-exchange-alt"></i> Transactions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="categories.html" class="nav-link active">
+                    <i class="fas fa-list"></i> Categories
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="budget.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i> Budget
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="debt%20or%20loan.html" class="nav-link">
+                    <i class="fas fa-hand-holding-usd"></i> Debt/Loans
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="reports%20and%20tools.html" class="nav-link">
+                    <i class="fas fa-tools"></i> Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <main class="categories-container">
+            <section class="categories-header">
+                <h1>Transaction Categories</h1>
+                <button id="addCategoryBtn" class="action-button add-new">Add New Category</button>
+            </section>
+
+            <div class="categories-grid">
+                <section class="category-section">
+                    <h2>Income Categories</h2>
+                    <div id="incomeCategories" class="category-list"></div>
+                </section>
+                <section class="category-section">
+                    <h2>Expense Categories</h2>
+                    <div id="expenseCategories" class="category-list"></div>
+                </section>
+            </div>
+
+            <!-- Add Category Modal -->
+            <div id="categoryModal" class="modal">
+                <div class="modal-content">
+                    <h2>Add Category</h2>
+                    <form id="addCategoryForm">
+                        <div class="form-group">
+                            <label for="categoryName">Category Name</label>
+                            <input type="text" id="categoryName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoryType">Type</label>
+                            <select id="categoryType" required>
+                                <option value="income">Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoryIcon">Icon</label>
+                            <input type="file" id="categoryIcon" accept="image/*">
+                        </div>
+                        <div class="modal-buttons">
+                            <button type="submit" class="btn-primary">Save Category</button>
+                            <button type="button" class="btn-secondary" id="closeModal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/themeManager.js"></script>
+    <script>ThemeManager.init();</script>
+    <script src="categories.js"></script>
+</body>
+</html>

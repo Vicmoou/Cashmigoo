@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts - Cashmigo</title>
+    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="accounts.css">
+    <link rel="stylesheet" href="modals.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">Cashmigo</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="homepage.html" class="nav-link">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="accounts.html" class="nav-link active">
+                    <i class="fas fa-wallet"></i> Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="transactions.html" class="nav-link">
+                    <i class="fas fa-exchange-alt"></i> Transactions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="categories.html" class="nav-link">
+                    <i class="fas fa-list"></i> Categories
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="budget.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i> Budget
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="debt%20or%20loan.html" class="nav-link">
+                    <i class="fas fa-hand-holding-usd"></i> Debt/Loans
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="reports%20and%20tools.html" class="nav-link">
+                    <i class="fas fa-tools"></i> Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" id="logoutBtn" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <main class="accounts-container">
+            <section class="accounts-header">
+                <h1>My Accounts</h1>
+                <button id="addAccountBtn" class="btn-primary">Add New Account</button>
+            </section>
+
+            <section class="accounts-grid" id="accountsList"></section>
+
+            <!-- Add Account Modal -->
+            <div id="addAccountModal" class="modal">
+                <div class="modal-content">
+                    <h2>Add New Account</h2>
+                    <form id="addAccountForm">
+                        <div class="form-group">
+                            <label for="accountName">Account Name</label>
+                            <input type="text" id="accountName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="accountType">Account Type</label>
+                            <select id="accountType" required>
+                                <option value="savings">Savings</option>
+                                <option value="credit">Credit Card</option>
+                                <option value="investment">Investment</option>
+                                <option value="Bank">Bank</option>
+                                <option value="Wallet">Wallet</option>
+                                <option value="Visa">Visa</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="initialBalance">Initial Balance</label>
+                            <input type="number" id="initialBalance" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="accountIcon">Account Icon</label>
+                            <input type="file" id="accountIcon" accept="image/*">
+                        </div>
+                        <div class="modal-buttons">
+                            <button type="submit" class="btn-primary">Create Account</button>
+                            <button type="button" class="btn-secondary" id="closeModal">Cancel</button>
+                            <button type="button" class="btn-danger" id="deleteAccount" style="display: none;">Delete Account</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Add Adjust Balance Modal -->
+            <div id="adjustBalanceModal" class="modal">
+                <div class="modal-content">
+                    <h2>Adjust Balance</h2>
+                    <form id="adjustBalanceForm">
+                        <input type="hidden" id="adjustAccountId">
+                        <div class="form-group">
+                            <label for="adjustmentAmount">New Balance</label>
+                            <input type="number" id="adjustmentAmount" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="adjustmentNote">Note</label>
+                            <input type="text" id="adjustmentNote" placeholder="Reason for adjustment" required>
+                        </div>
+                        <div class="modal-buttons">
+                            <button type="submit" class="btn-primary">Save</button>
+                            <button type="button" class="btn-secondary" id="closeAdjustModal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/themeManager.js"></script>
+    <script>ThemeManager.init();</script>
+    <script src="accounts.js"></script>
+</body>
+</html>

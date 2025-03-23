@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget - Cashmigo</title>
+    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="budget.css">
+    <link rel="stylesheet" href="modals.css">
+    <link rel="stylesheet" href="shared-styles.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">Cashmigo</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="homepage.html" class="nav-link">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="accounts.html" class="nav-link">
+                    <i class="fas fa-wallet"></i> Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="transactions.html" class="nav-link">
+                    <i class="fas fa-exchange-alt"></i> Transactions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="categories.html" class="nav-link">
+                    <i class="fas fa-list"></i> Categories
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="budget.html" class="nav-link active">
+                    <i class="fas fa-chart-line"></i> Budget
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="debt%20or%20loan.html" class="nav-link">
+                    <i class="fas fa-hand-holding-usd"></i> Debt/Loans
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="reports%20and%20tools.html" class="nav-link">
+                    <i class="fas fa-chart-pie"></i> Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" id="logoutBtn" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <main class="budget-container">
+            <section class="budget-header">
+                <h1>Budget Planning</h1>
+                <button id="addBudgetBtn" class="action-button add-new">Set New Budget</button>
+            </section>
+
+            <div class="budget-overview">
+                <div class="budget-card total-budget">
+                    <h3>Monthly Budget</h3>
+                    <div class="amount" id="totalBudget">$0.00</div>
+                </div>
+                <div class="budget-card spent">
+                    <h3>Total Spent</h3>
+                    <div class="amount" id="totalSpent">$0.00</div>
+                </div>
+                <div class="budget-card remaining">
+                    <h3>Remaining</h3>
+                    <div class="amount" id="remainingBudget">$0.00</div>
+                </div>
+            </div>
+
+            <div class="budget-grid" id="categoryBudgets"></div>
+
+            <!-- Add Budget Modal -->
+            <div id="budgetModal" class="modal">
+                <div class="modal-content">
+                    <h2>Set Category Budget</h2>
+                    <form id="addBudgetForm">
+                        <div class="form-group">
+                            <label for="categorySelect">Category</label>
+                            <select id="categorySelect" required>
+                                <option value="">Select a category</option>
+                                <optgroup label="Expense Categories" id="expenseCategories"></optgroup>
+                            </select>
+                            <div class="category-warning" style="color: #e74c3c; margin-top: 0.5rem; display: none;">
+                                Please create expense categories first
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="budgetAmount">Monthly Limit</label>
+                            <input type="number" id="budgetAmount" step="0.01" required>
+                        </div>
+                        <div class="modal-buttons">
+                            <button type="submit" class="btn-primary">Save Budget</button>
+                            <button type="button" class="btn-secondary" id="closeModal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/themeManager.js"></script>
+    <script>ThemeManager.init();</script>
+    <script src="budget.js"></script>
+</body>
+</html>

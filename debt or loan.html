@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debt & Loans - Cashmigo</title>
+    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="debt or loan.css">
+    <link rel="stylesheet" href="shared-styles.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">Cashmigo</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="homepage.html" class="nav-link">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="accounts.html" class="nav-link">
+                    <i class="fas fa-wallet"></i> Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="transactions.html" class="nav-link">
+                    <i class="fas fa-exchange-alt"></i> Transactions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="categories.html" class="nav-link">
+                    <i class="fas fa-tags"></i> Categories
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="budget.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i> Budget
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="debt%20or%20loan.html" class="nav-link active">
+                    <i class="fas fa-hand-holding-usd"></i> Debt/Loans
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="reports%20and%20tools.html" class="nav-link">
+                    <i class="fas fa-chart-pie"></i> Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" id="logoutBtn" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <main class="debt-container">
+            <section class="debt-header">
+                <h1>Debt & Loan Management</h1>
+                <button id="addDebtBtn" class="action-button add-new">Add New Debt/Loan</button>
+            </section>
+
+            <div class="debt-grid" id="debtList"></div>
+
+            <!-- Add Debt/Loan Modal -->
+            <div id="debtModal" class="modal">
+                <div class="modal-content">
+                    <h2>Add Debt/Loan</h2>
+                    <form id="addDebtForm">
+                        <div class="form-group">
+                            <label for="debtName">Name/Description</label>
+                            <input type="text" id="debtName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="debtType">Type</label>
+                            <select id="debtType" required>
+                                <option value="debt">Debt (I Owe)</option>
+                                <option value="loan">Loan (Owed to Me)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Total Amount</label>
+                            <input type="number" id="amount" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="interestRate">Interest Rate (%)</label>
+                            <input type="number" id="interestRate" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dueDate">Due Date</label>
+                            <input type="date" id="dueDate" required>
+                        </div>
+                        <div class="modal-buttons">
+                            <button type="submit" class="btn-primary">Save</button>
+                            <button type="button" class="btn-secondary" id="closeModal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Payment Modal -->
+            <div id="paymentModal" class="modal">
+                <div class="modal-content">
+                    <h2>Add Payment</h2>
+                    <form id="addPaymentForm">
+                        <div class="form-group">
+                            <label for="paymentAmount">Amount</label>
+                            <input type="number" id="paymentAmount" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentDate">Date</label>
+                            <input type="date" id="paymentDate" required>
+                        </div>
+                        <div class="modal-buttons">
+                            <button type="submit" class="btn-primary">Add Payment</button>
+                            <button type="button" class="btn-secondary" id="closePaymentModal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/themeManager.js"></script>
+    <script>ThemeManager.init();</script>
+    <script src="debt or loan.js"></script>
+</body>
+</html>

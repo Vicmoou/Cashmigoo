@@ -1,0 +1,66 @@
+.reports-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.reports-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.report-controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.report-controls select {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--secondary-color);
+}
+
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+}
+
+.report-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.report-card h2 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.report-card canvas {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+#budgetAnalysis {
+    margin-top: 1rem;
+}
+
+.budget-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.budget-item:last-child {
+    border-bottom: none;
+}
+
+/* Remove old navigation styles */
+.main-nav {
+    display: none;
+}

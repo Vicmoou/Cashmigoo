@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Tools - Cashmigo</title>
+    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="reports and tools.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-logo">Cashmigo</div>
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="homepage.html" class="nav-link">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="accounts.html" class="nav-link">
+                    <i class="fas fa-wallet"></i> Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="transactions.html" class="nav-link">
+                    <i class="fas fa-exchange-alt"></i> Transactions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="categories.html" class="nav-link">
+                    <i class="fas fa-tags"></i> Categories
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="budget.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i> Budget
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="debt%20or%20loan.html" class="nav-link">
+                    <i class="fas fa-hand-holding-usd"></i> Debt/Loans
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="reports%20and%20tools.html" class="nav-link active">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" id="logoutBtn" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <main class="reports-container">
+            <section class="reports-header">
+                <h1>Financial Reports & Analysis</h1>
+                <div class="report-controls">
+                    <select id="timeRange">
+                        <option value="30">Last 30 Days</option>
+                        <option value="90">Last 3 Months</option>
+                        <option value="180">Last 6 Months</option>
+                        <option value="365">Last Year</option>
+                    </select>
+                    <button id="exportBtn" class="btn-primary">Export Data</button>
+                </div>
+            </section>
+
+            <div class="reports-grid">
+                <section class="report-card">
+                    <h2>Spending by Category</h2>
+                    <canvas id="categoryChart"></canvas>
+                </section>
+
+                <section class="report-card">
+                    <h2>Monthly Overview</h2>
+                    <canvas id="monthlyChart"></canvas>
+                </section>
+
+                <section class="report-card">
+                    <h2>Income vs Expenses</h2>
+                    <canvas id="comparisonChart"></canvas>
+                </section>
+
+                <section class="report-card">
+                    <h2>Budget Analysis</h2>
+                    <div id="budgetAnalysis"></div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <script src="js/themeManager.js"></script>
+    <script>ThemeManager.init();</script>
+    <script src="reports and tools.js"></script>
+</body>
+</html>

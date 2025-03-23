@@ -1,0 +1,364 @@
+:root[data-theme="light"] {
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary-color: #10b981;
+    --accent-color: #f43f5e;
+    --background-color: #f8fafc;
+    --surface-color: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+}
+
+:root[data-theme="dark"] {
+    --primary-color: #818cf8;
+    --primary-dark: #6366f1;
+    --secondary-color: #34d399;
+    --accent-color: #fb7185;
+    --background-color: #1e293b;
+    --surface-color: #273449;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --border-color: #475569;
+}
+
+body.dark {
+    background-color: var(--background-color);
+    color: var(--text-primary);
+}
+
+body.dark .sidebar {
+    background: rgba(0, 0, 0, 0.2);
+    border-right-color: var(--border-color);
+}
+
+body.dark .card,
+body.dark .settings-card,
+body.dark .modal-content {
+    background: var(--surface-color);
+    color: var(--text-primary);
+}
+
+body.dark .nav-link {
+    color: var(--text-primary);
+}
+
+body.dark .nav-link:hover,
+body.dark .nav-link.active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark input,
+body.dark select {
+    background: var(--surface-color);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+body.dark .modal {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Add global theme switching */
+[data-theme="dark"] {
+    background-color: var(--background-color) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .sidebar {
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .settings-card,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .report-card,
+[data-theme="dark"] .category-section,
+[data-theme="dark"] .budget-card,
+[data-theme="dark"] .debt-card {
+    background: var(--surface-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Add recent transactions dark theme support */
+[data-theme="dark"] .recent-transactions {
+    background: var(--surface-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .transaction-item {
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .transaction-meta {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .transaction-amount.income {
+    color: var(--secondary-color);
+}
+
+[data-theme="dark"] .transaction-amount.expense {
+    color: var(--accent-color);
+}
+
+[data-theme="dark"] .no-transactions {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .chart-container {
+    background: var(--surface-color);
+}
+
+[data-theme="dark"] .card-trend {
+    color: var(--text-secondary);
+}
+
+/* Enhanced glassmorphism for dark theme */
+[data-theme="dark"] .glass-effect {
+    background: rgba(39, 52, 73, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Account page dark theme */
+[data-theme="dark"] .account-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .account-balance {
+    color: var(--secondary-color);
+}
+
+[data-theme="dark"] .account-actions button {
+    background: var(--surface-color);
+    border-color: var(--border-color);
+}
+
+/* Transaction page dark theme */
+[data-theme="dark"] .account-info {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .transactions-list {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .transaction-item {
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .transaction-category,
+[data-theme="dark"] .transaction-date {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .transaction-description {
+    color: var (--text-primary);
+}
+
+[data-theme="dark"] .no-transactions {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .btn-secondary {
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* Budget page dark theme */
+[data-theme="dark"] .budget-overview {
+    background: transparent;
+}
+
+[data-theme="dark"] .budget-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .budget-card h3 {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .amount {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="dark"] .category-budget {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .budget-details {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .category-warning {
+    color: var(--accent-color);
+}
+
+[data-theme="dark"] #categorySelect {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Debt/Loan page dark theme enhancements */
+[data-theme="dark"] .debt-container {
+    background-color: var(--background-color);
+}
+
+[data-theme="dark"] .debt-info div {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .payment-history {
+    border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .payment-item {
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .debt-actions button {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .modal input,
+[data-theme="dark"] .modal select {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Enhanced debt/loan dark theme fixes */
+[data-theme="dark"] .debt-actions button.btn-primary,
+[data-theme="dark"] .debt-actions button.btn-secondary,
+[data-theme="dark"] .modal-buttons button.btn-primary,
+[data-theme="dark"] .modal-buttons button.btn-secondary {
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .debt-actions button.btn-primary:hover,
+[data-theme="dark"] .modal-buttons button.btn-primary:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .debt-actions button.btn-secondary:hover,
+[data-theme="dark"] .modal-buttons button.btn-secondary:hover {
+    background: var(--surface-color);
+    border-color: var(--text-secondary);
+}
+
+[data-theme="dark"] .modal-content {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+/* Fix debt/loan page background and modal */
+[data-theme="dark"] .debt-grid {
+    background: transparent;
+}
+
+[data-theme="dark"] .modal {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] .modal-content {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .action-button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+[data-theme="dark"] .btn-secondary {
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .modal-content h2 {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-group label {
+    color: var(--text-secondary);
+}
+
+/* Fix debt/loan page background and containers */
+[data-theme="dark"] .debt-container .main-content {
+    background: var(--background-color);
+}
+
+[data-theme="dark"] .debt-grid {
+    background: transparent !important;
+}
+
+[data-theme="dark"] .debt-card {
+    background: var(--surface-color) !important;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .payment-modal .modal-content,
+[data-theme="dark"] #debtModal .modal-content {
+    background: var(--surface-color) !important;
+    border: 1px solid var(--border-color);
+}
+
+/* Fix debt/loan page background */
+[data-theme="dark"] body {
+    background-color: var(--background-color);
+}
+
+[data-theme="dark"] .main-content {
+    background-color: var(--background-color);
+}
+
+[data-theme="dark"] .debt-container {
+    background-color: var(--background-color);
+}
+
+/* Fix debt/loan page theming */
+[data-theme="dark"] .main-content,
+[data-theme="dark"] .debt-container,
+[data-theme="dark"] body {
+    background-color: var(--background-color) !important;
+}
+
+[data-theme="dark"] .debt-grid {
+    background-color: transparent !important;
+}
+
+[data-theme="dark"] .debt-card {
+    background-color: var(--surface-color) !important;
+    border-color: var(--border-color);
+}
