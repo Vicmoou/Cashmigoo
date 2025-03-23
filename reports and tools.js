@@ -86,6 +86,10 @@ function updateCharts() {
         const days = parseInt(timeRangeSelect.value);
         const filteredTransactions = getFilteredTransactions(days);
         
+        // Get accounts total balance
+        const accounts = JSON.parse(localStorage.getItem(`accounts_${currentUser.id}`)) || [];
+        const totalBalance = accounts.reduce((sum, account) => sum + account.balance, 0);
+        
         if (filteredTransactions.length === 0) {
             document.querySelectorAll('.report-card').forEach(card => {
                 card.innerHTML = '<p class="no-data">No transactions found for selected period</p>';
@@ -119,7 +123,19 @@ function updateCharts() {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                layout: {
+                    padding: 20
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15
+                        }
+                    }
+                }
             }
         });
 
@@ -139,8 +155,23 @@ function updateCharts() {
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: 20
+                },
                 scales: {
-                    y: { beginAtZero: true }
+                    y: { 
+                        beginAtZero: true,
+                        ticks: {
+                            padding: 10
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            padding: 10
+                        }
+                    }
                 }
             }
         });
@@ -161,6 +192,22 @@ function updateCharts() {
                     data: [totalIncome, totalExpenses],
                     backgroundColor: ['#2ecc71', '#e74c3c']
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: 20
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15
+                        }
+                    }
+                }
             }
         });
 
@@ -168,6 +215,10 @@ function updateCharts() {
         const budgetAnalysis = document.getElementById('budgetAnalysis');
         if (budgetAnalysis) {
             budgetAnalysis.innerHTML = `
+                <div class="budget-item">
+                    <span>Total Balance:</span>
+                    <strong>${formatAmount(totalBalance)}</strong>
+                </div>
                 <div class="budget-item">
                     <span>Total Income:</span>
                     <strong class="income">${formatAmount(totalIncome)}</strong>
@@ -262,6 +313,13 @@ window.addEventListener('transactionsUpdated', () => {
     transactions.length = 0;
     transactions.push(...updatedTransactions);
     updateCharts();
+});
+
+// Add resize handler
+window.addEventListener('resize', () => {
+    if (window.categoryChart) window.categoryChart.resize();
+    if (window.monthlyChart) window.monthlyChart.resize();
+    if (window.comparisonChart) window.comparisonChart.resize();
 });
 
 // Initial chart theme update

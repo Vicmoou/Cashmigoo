@@ -37,6 +37,7 @@
     min-height: 400px;
     display: flex;
     flex-direction: column;
+    position: relative; /* Add this */
 }
 
 .report-card h2 {
@@ -49,6 +50,7 @@
     height: 300px !important;
     flex: 1;
     min-height: 300px;
+    position: relative; /* Add this */
 }
 
 #budgetAnalysis {

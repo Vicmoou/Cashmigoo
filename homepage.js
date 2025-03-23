@@ -31,13 +31,15 @@ function formatAmount(amount) {
     return `${symbols[userCurrency]} ${numericAmount.toFixed(2)}`;
 }
 
+// Get all accounts and calculate total balance
+const accounts = JSON.parse(localStorage.getItem(`accounts_${currentUser.id}`)) || [];
+const totalBalance = accounts.reduce((sum, account) => sum + account.balance, 0);
+
 // Initialize data
 let transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
 let userTransactions = transactions.filter(t => t.userId === currentUser.id);
 
 // Calculate summary data
-let totalBalance = userTransactions.reduce((acc, t) => 
-    t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
 let monthlyIncome = userTransactions.filter(t => 
     t.type === 'income' && new Date(t.date).getMonth() === new Date().getMonth())
     .reduce((acc, t) => acc + t.amount, 0);
@@ -199,6 +201,16 @@ window.addEventListener('transactionsUpdated', () => {
     updateDisplayAmounts();
     renderRecentTransactions();
     updateCharts();
+});
+
+// Add accounts update listener
+window.addEventListener('storage', (e) => {
+    if (e.key === `accounts_${currentUser.id}`) {
+        const updatedAccounts = JSON.parse(e.newValue) || [];
+        const newTotalBalance = updatedAccounts.reduce((sum, account) => sum + account.balance, 0);
+        document.getElementById('totalBalance').textContent = formatAmount(newTotalBalance);
+        updateCharts();
+    }
 });
 
 // Initial display update
