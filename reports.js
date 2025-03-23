@@ -198,42 +198,125 @@ function updateReports(transactions) {
     updateChartTheme();
 }
 
+function updateChartData(monthlyData) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    // Category spending chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    const categoryData = getCategoryTotals(transactions.filter(t => t.type === 'expense'));
+    
+    new Chart(categoryCtx, {
+        type: 'pie',
+        data: {
+            labels: categoryData.labels,
+            datasets: [{
+                data: categoryData.values,
+                backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Monthly overview chart
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(monthlyCtx, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Income',
+                data: months.map((_, i) => monthlyData[i]?.income || 0),
+                backgroundColor: '#10b981'
+            }, {
+                label: 'Expenses',
+                data: months.map((_, i) => monthlyData[i]?.expense || 0),
+                backgroundColor: '#ef4444'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => formatAmount(value)
+                    }
+                }
+            }
+        }
+    });
+
+    // Update totals display
+    const totals = transactions.reduce((acc, t) => {
+        if (t.type === 'income') acc.income += t.amount;
+        else acc.expenses += t.amount;
+        return acc;
+    }, { income: 0, expenses: 0 });
+
+    document.getElementById('totalIncome').textContent = formatAmount(totals.income);
+    document.getElementById('totalExpenses').textContent = formatAmount(totals.expenses);
+    document.getElementById('netIncome').textContent = formatAmount(totals.income - totals.expenses);
+}
+
 // Export functionality
 document.getElementById('exportBtn').addEventListener('click', function() {
     try {
+        const transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+        if (transactions.length === 0) {
+            alert('No transactions to export');
+            return;
+        }
+
+        // Get all user accounts for reference
+        const accounts = JSON.parse(localStorage.getItem(`accounts_${currentUser.id}`)) || [];
+        const accountMap = accounts.reduce((acc, a) => ({ ...acc, [a.id]: a.name }), {});
+
         // Format data for export
         const exportData = transactions.map(t => ({
             Date: new Date(t.date).toLocaleDateString(),
+            Account: accountMap[t.accountId] || 'Unknown',
             Type: t.type.charAt(0).toUpperCase() + t.type.slice(1),
             Category: t.categoryName,
             Description: t.description,
-            Amount: formatAmount(t.amount),
-            Account: t.accountName || 'N/A'
+            Amount: formatAmount(t.amount)
         }));
 
-        // Create CSV content
-        const headers = Object.keys(exportData[0]);
-        const csvRows = [
+        // Create CSV headers and content
+        const headers = ['Date', 'Account', 'Type', 'Category', 'Description', 'Amount'];
+        const csvContent = [
             headers.join(','),
             ...exportData.map(row => 
-                headers.map(header => 
-                    `"${row[header]}"`
-                ).join(',')
+                headers.map(header => {
+                    const value = row[header].toString().replace(/"/g, '""');
+                    return `"${value}"`;
+                }).join(',')
             )
-        ];
-        const csvContent = csvRows.join('\n');
+        ].join('\n');
 
-        // Create and trigger download
+        // Create and download file
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', `transactions_${new Date().toISOString().split('T')[0]}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        const filename = `cashmigo_transactions_${new Date().toISOString().slice(0,10)}.csv`;
+        
+        if (window.navigator.msSaveOrOpenBlob) {
+            window.navigator.msSaveBlob(blob, filename);
+        } else {
+            const elem = window.document.createElement('a');
+            elem.href = window.URL.createObjectURL(blob);
+            elem.download = filename;
+            document.body.appendChild(elem);
+            elem.click();
+            document.body.removeChild(elem);
+            window.URL.revokeObjectURL(elem.href);
+        }
 
+        alert('Export successful! Check your downloads folder.');
     } catch (error) {
         console.error('Export error:', error);
         alert('Failed to export data. Please try again.');
