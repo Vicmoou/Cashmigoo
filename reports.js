@@ -11,88 +11,105 @@ ThemeManager.init();
 const transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
 let expenseChart, incomeChart, balanceChart;
 
+// Add formatAmount function at the top after initialization
+function formatAmount(amount) {
+    const userCurrency = localStorage.getItem(`currency_${currentUser.id}`) || 'USD';
+    const symbols = { USD: '$', EUR: '€', AOA: 'Kz', BRL: 'R$' };
+    return `${symbols[userCurrency]} ${Number(amount).toFixed(2)}`;
+}
+
 function initializeCharts() {
-    const monthlyData = getMonthlyData(transactions);
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    
-    // Category spending chart
-    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    const categoryData = getCategoryTotals(transactions);
-    
-    new Chart(categoryCtx, {
-        type: 'pie',
-        data: {
-            labels: categoryData.labels,
-            datasets: [{
-                data: categoryData.values,
-                backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6']
-            }]
-        }
-    });
+    try {
+        // Destroy existing charts to prevent duplicates
+        if (expenseChart) expenseChart.destroy();
+        if (incomeChart) incomeChart.destroy();
+        if (balanceChart) balanceChart.destroy();
 
-    // Monthly overview chart
-    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-    new Chart(monthlyCtx, {
-        type: 'bar',
-        data: {
-            labels: months,
-            datasets: [{
-                label: 'Income',
-                data: months.map((_, i) => monthlyData[i]?.income || 0),
-                backgroundColor: '#10b981'
-            }, {
-                label: 'Expenses',
-                data: months.map((_, i) => monthlyData[i]?.expense || 0),
-                backgroundColor: '#ef4444'
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+        const monthlyData = getMonthlyData(transactions);
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        // Category spending chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        const categoryData = getCategoryTotals(transactions);
+        
+        new Chart(categoryCtx, {
+            type: 'pie',
+            data: {
+                labels: categoryData.labels,
+                datasets: [{
+                    data: categoryData.values,
+                    backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6']
+                }]
             }
-        }
-    });
+        });
 
-    // Income vs Expenses chart
-    const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
-    const totals = getTransactionTotals(transactions);
-    
-    new Chart(comparisonCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Income', 'Expenses'],
-            datasets: [{
-                data: [totals.income, totals.expenses],
-                backgroundColor: ['#10b981', '#ef4444']
-            }]
-        }
-    });
-
-    // Income/Expense Chart
-    const incomeExpenseCtx = document.getElementById('incomeExpenseChart').getContext('2d');
-    expenseChart = new Chart(incomeExpenseCtx, {
-        type: 'bar',
-        data: {
-            labels: months,
-            datasets: [
-                {
+        // Monthly overview chart
+        const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
                     label: 'Income',
                     data: months.map((_, i) => monthlyData[i]?.income || 0),
                     backgroundColor: '#10b981'
-                },
-                {
+                }, {
                     label: 'Expenses',
                     data: months.map((_, i) => monthlyData[i]?.expense || 0),
                     backgroundColor: '#ef4444'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
-            ]
-        }
-    });
+            }
+        });
 
-    // Update totals
-    updateTotals(transactions);
+        // Income vs Expenses chart
+        const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+        const totals = getTransactionTotals(transactions);
+        
+        new Chart(comparisonCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Income', 'Expenses'],
+                datasets: [{
+                    data: [totals.income, totals.expenses],
+                    backgroundColor: ['#10b981', '#ef4444']
+                }]
+            }
+        });
+
+        // Income/Expense Chart
+        const incomeExpenseCtx = document.getElementById('incomeExpenseChart').getContext('2d');
+        expenseChart = new Chart(incomeExpenseCtx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Income',
+                        data: months.map((_, i) => monthlyData[i]?.income || 0),
+                        backgroundColor: '#10b981'
+                    },
+                    {
+                        label: 'Expenses',
+                        data: months.map((_, i) => monthlyData[i]?.expense || 0),
+                        backgroundColor: '#ef4444'
+                    }
+                ]
+            }
+        });
+
+        // Update totals
+        updateTotals(transactions);
+    } catch (error) {
+        console.error('Error initializing charts:', error);
+        alert('Failed to initialize charts. Please refresh the page.');
+    }
 }
 
 function getMonthlyData(transactions) {
@@ -178,24 +195,24 @@ window.addEventListener('transactionsUpdated', () => {
 });
 
 function updateReports(transactions) {
-    // Group transactions by month
-    const monthlyData = transactions.reduce((acc, t) => {
-        const month = new Date(t.date).getMonth();
-        if (!acc[month]) {
-            acc[month] = { income: 0, expense: 0 };
-        }
-        if (t.type === 'income') {
-            acc[month].income += t.amount;
-        } else {
-            acc[month].expense += t.amount;
-        }
-        return acc;
-    }, {});
+    try {
+        // Clear existing charts
+        const chartIds = ['categoryChart', 'monthlyChart', 'comparisonChart', 'incomeExpenseChart'];
+        chartIds.forEach(id => {
+            const canvas = document.getElementById(id);
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                const chart = Chart.getChart(canvas);
+                if (chart) chart.destroy();
+            }
+        });
 
-    // Update charts
-    updateChartData(monthlyData);
-    updateTotals(transactions);
-    updateChartTheme();
+        // Reinitialize all charts
+        initializeCharts();
+    } catch (error) {
+        console.error('Error updating reports:', error);
+        alert('Failed to update reports. Please refresh the page.');
+    }
 }
 
 function updateChartData(monthlyData) {
@@ -266,11 +283,11 @@ function updateChartData(monthlyData) {
 }
 
 // Export functionality
-document.getElementById('exportBtn').addEventListener('click', function() {
+document.getElementById('exportBtn').addEventListener('click', async function() {
     try {
         const transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
-        if (transactions.length === 0) {
-            alert('No transactions to export');
+        if (!transactions || transactions.length === 0) {
+            alert('No transactions available to export');
             return;
         }
 
