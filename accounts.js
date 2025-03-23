@@ -4,6 +4,9 @@ if (!currentUser) {
     window.location.href = 'login.html';
 }
 
+// Initialize theme
+ThemeManager.init();
+
 function formatAmount(amount) {
     const userCurrency = localStorage.getItem(`currency_${currentUser.id}`) || 'USD';
     const numericAmount = Number(amount);

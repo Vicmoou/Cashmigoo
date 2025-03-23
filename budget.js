@@ -4,6 +4,9 @@ if (!currentUser) {
     window.location.href = 'login.html';
 }
 
+// Initialize theme
+ThemeManager.init();
+
 // Initialize data
 let budgets = JSON.parse(localStorage.getItem(`budgets_${currentUser.id}`)) || {};
 const categories = JSON.parse(localStorage.getItem(`categories_${currentUser.id}`)) || {
@@ -189,6 +192,30 @@ function renderBudgets() {
     document.getElementById('totalSpent').textContent = formatAmount(totalSpent);
     document.getElementById('remainingBudget').textContent = formatAmount(totalBudget - totalSpent);
 }
+
+// Update progress bar colors based on theme
+function updateProgressBarColors() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const colors = {
+        safe: isDark ? 'linear-gradient(to right, #059669, #34d399)' : 'linear-gradient(to right, #10b981, #34d399)',
+        warning: isDark ? 'linear-gradient(to right, #d97706, #fbbf24)' : 'linear-gradient(to right, #f59e0b, #fbbf24)',
+        danger: isDark ? 'linear-gradient(to right, #dc2626, #f87171)' : 'linear-gradient(to right, #ef4444, #f87171)'
+    };
+
+    document.documentElement.style.setProperty('--progress-safe', colors.safe);
+    document.documentElement.style.setProperty('--progress-warning', colors.warning);
+    document.documentElement.style.setProperty('--progress-danger', colors.danger);
+}
+
+// Add theme change listener
+window.addEventListener('storage', (e) => {
+    if (e.key === `theme_${currentUser.id}`) {
+        updateProgressBarColors();
+    }
+});
+
+// Initial progress bar color update
+updateProgressBarColors();
 
 // Initial render
 renderBudgets();

@@ -4,6 +4,9 @@ if (!currentUser) {
     window.location.href = 'login.html';
 }
 
+// Initialize theme
+ThemeManager.init();
+
 // Initialize
 const transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
 const timeRangeSelect = document.getElementById('timeRange');
@@ -46,6 +49,34 @@ function getMonthlyData(filteredTransactions) {
     return monthlyData;
 }
 
+// Add theme-aware chart configuration
+function updateChartTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    Chart.defaults.color = isDark ? '#e2e8f0' : '#64748b';
+    Chart.defaults.borderColor = isDark ? '#334155' : '#e2e8f0';
+    
+    const chartColors = {
+        income: isDark ? '#059669' : '#10b981',
+        expense: isDark ? '#dc2626' : '#ef4444',
+        balance: isDark ? '#3b82f6' : '#2563eb'
+    };
+
+    if (window.categoryChart) {
+        categoryChart.options.plugins.legend.labels.color = isDark ? '#e2e8f0' : '#64748b';
+        categoryChart.update();
+    }
+    if (window.monthlyChart) {
+        monthlyChart.data.datasets[0].backgroundColor = chartColors.income;
+        monthlyChart.data.datasets[1].backgroundColor = chartColors.expense;
+        monthlyChart.update();
+    }
+    if (window.comparisonChart) {
+        comparisonChart.data.datasets[0].backgroundColor = [chartColors.income, chartColors.expense];
+        comparisonChart.update();
+    }
+}
+
 // Update charts
 function updateCharts() {
     const days = parseInt(timeRangeSelect.value);
@@ -54,7 +85,7 @@ function updateCharts() {
     const monthlyData = getMonthlyData(filteredTransactions);
 
     // Category spending chart
-    new Chart(document.getElementById('categoryChart'), {
+    window.categoryChart = new Chart(document.getElementById('categoryChart'), {
         type: 'pie',
         data: {
             labels: Object.keys(categoryTotals),
@@ -69,7 +100,7 @@ function updateCharts() {
     });
 
     // Monthly overview chart
-    new Chart(document.getElementById('monthlyChart'), {
+    window.monthlyChart = new Chart(document.getElementById('monthlyChart'), {
         type: 'bar',
         data: {
             labels: Object.keys(monthlyData),
@@ -98,7 +129,7 @@ function updateCharts() {
         .filter(t => t.type === 'expense')
         .reduce((sum, t) => sum + t.amount, 0);
 
-    new Chart(document.getElementById('comparisonChart'), {
+    window.comparisonChart = new Chart(document.getElementById('comparisonChart'), {
         type: 'doughnut',
         data: {
             labels: ['Income', 'Expenses'],
@@ -148,6 +179,16 @@ function exportToCSV() {
     a.download = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
 }
+
+// Listen for theme changes
+window.addEventListener('storage', (e) => {
+    if (e.key === `theme_${currentUser.id}`) {
+        updateChartTheme();
+    }
+});
+
+// Initial chart theme update
+updateChartTheme();
 
 // Event listeners
 timeRangeSelect.addEventListener('change', updateCharts);

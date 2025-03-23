@@ -7,14 +7,49 @@ class ThemeManager {
             const theme = localStorage.getItem(`theme_${currentUser.id}`) || 'light';
             this.applyTheme(theme);
             this.setupMobileMenu();
+            
+            // Setup system theme detection
+            if (theme === 'system') {
+                this.setupSystemThemeDetection();
+            }
+
+            // Listen for theme changes
+            window.addEventListener('storage', (e) => {
+                if (e.key === `theme_${currentUser.id}`) {
+                    this.applyTheme(e.newValue);
+                }
+            });
         } catch (error) {
             console.error('Theme initialization error:', error);
         }
     }
 
     static applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        document.body.className = theme;
+        // Remove all theme classes first
+        document.body.classList.remove('light', 'dark', 'system');
+        
+        let effectiveTheme = theme;
+        if (theme === 'system') {
+            effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        document.documentElement.setAttribute('data-theme', effectiveTheme);
+        document.body.classList.add(theme);
+        
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+            localStorage.setItem(`theme_${currentUser.id}`, theme);
+        }
+    }
+
+    static setupSystemThemeDetection() {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addEventListener('change', (e) => {
+            const currentTheme = localStorage.getItem(`theme_${JSON.parse(localStorage.getItem('currentUser')).id}`);
+            if (currentTheme === 'system') {
+                this.applyTheme('system');
+            }
+        });
     }
 
     static setupMobileMenu() {
@@ -35,9 +70,9 @@ class ThemeManager {
     }
 }
 
-// Initialize once
+// Initialize theme system
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ThemeManager.init.bind(ThemeManager));
+    document.addEventListener('DOMContentLoaded', () => ThemeManager.init());
 } else {
     ThemeManager.init();
 }

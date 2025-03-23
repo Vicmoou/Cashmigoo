@@ -11,18 +11,24 @@ document.getElementById('memberSince').textContent = new Date(currentUser.create
 
 // Theme handling
 const themeSelector = document.getElementById('themeSelector');
-let currentTheme = localStorage.getItem(`theme_${currentUser.id}`) || 'light';
+const currentTheme = localStorage.getItem(`theme_${currentUser.id}`) || 'light';
+const colorButtons = document.querySelectorAll('.color-btn');
+const currentAccentColor = localStorage.getItem(`accent_${currentUser.id}`) || '#6366f1';
 
-// Set initial theme
+// Set initial theme and color
 themeSelector.value = currentTheme;
-document.documentElement.setAttribute('data-theme', currentTheme);
-document.body.classList.add(currentTheme);
+document.documentElement.style.setProperty('--primary-color', currentAccentColor);
 
 // Theme selector event listener
 themeSelector.addEventListener('change', (e) => {
     const newTheme = e.target.value;
-    localStorage.setItem(`theme_${currentUser.id}`, newTheme);
     ThemeManager.applyTheme(newTheme);
+    
+    // Dispatch event for other pages
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: `theme_${currentUser.id}`,
+        newValue: newTheme
+    }));
 });
 
 // Listen for theme changes from other pages

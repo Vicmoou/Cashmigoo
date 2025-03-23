@@ -5,6 +5,9 @@ if (!currentUser) {
     throw new Error('Authentication required');
 }
 
+// Initialize theme
+ThemeManager.init();
+
 // Initialize budget data if not exists
 if (!localStorage.getItem(`budgets_${currentUser.id}`)) {
     localStorage.setItem(`budgets_${currentUser.id}`, JSON.stringify({}));

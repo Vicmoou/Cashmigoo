@@ -1,0 +1,29 @@
+:root {
+    --transition-speed: 0.3s;
+    --primary-color: #6366f1;
+    --secondary-color: #10b981;
+    --accent-color: #f43f5e;
+    
+    /* Light theme */
+    --background-color: #f8fafc;
+    --surface-color: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+}
+
+[data-theme="dark"] {
+    --background-color: #0f172a;
+    --surface-color: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border-color: #334155;
+}
+
+* {
+    transition: background-color var(--transition-speed),
+                color var(--transition-speed),
+                border-color var(--transition-speed);
+}
+
+/* ...existing code... */
