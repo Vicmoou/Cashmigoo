@@ -79,3 +79,61 @@
     color: var(--text-secondary);
     font-style: italic;
 }
+
+/* Add/update responsive design */
+@media screen and (max-width: 768px) {
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+        padding-top: 1rem;
+    }
+
+    .reports-container {
+        padding: 1rem;
+    }
+
+    .reports-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .report-card {
+        min-height: auto;
+        padding: 1rem;
+    }
+
+    .chart-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    canvas {
+        min-width: 300px;
+        max-width: 100%;
+    }
+
+    .tool-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .tool-buttons button {
+        width: 100%;
+    }
+
+    .date-range-selector {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .date-range-selector input,
+    .date-range-selector select {
+        width: 100%;
+    }
+
+    .export-options {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
