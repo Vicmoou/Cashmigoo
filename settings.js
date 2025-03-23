@@ -11,7 +11,6 @@ document.getElementById('memberSince').textContent = new Date(currentUser.create
 
 // Theme handling
 const themeSelector = document.getElementById('themeSelector');
-const colorButtons = document.querySelectorAll('.color-btn');
 let currentTheme = localStorage.getItem(`theme_${currentUser.id}`) || 'light';
 
 // Set initial theme
@@ -22,7 +21,15 @@ document.body.classList.add(currentTheme);
 // Theme selector event listener
 themeSelector.addEventListener('change', (e) => {
     const newTheme = e.target.value;
+    localStorage.setItem(`theme_${currentUser.id}`, newTheme);
     ThemeManager.applyTheme(newTheme);
+});
+
+// Listen for theme changes from other pages
+window.addEventListener('storage', (e) => {
+    if (e.key === `theme_${currentUser.id}`) {
+        themeSelector.value = e.newValue;
+    }
 });
 
 // Currency handling
@@ -58,6 +65,3 @@ colorButtons.forEach(btn => {
 document.getElementById('editProfileBtn').addEventListener('click', () => {
     alert('Profile editing will be implemented soon!');
 });
-
-// Initialize theme on page load
-ThemeManager.init();

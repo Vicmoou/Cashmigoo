@@ -1,25 +1,49 @@
 class ThemeManager {
     static init() {
+        if (!document.querySelector('.sidebar')) return;
+        
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
         if (!currentUser) return;
 
+        // Get theme from localStorage
         const theme = localStorage.getItem(`theme_${currentUser.id}`) || 'light';
         this.applyTheme(theme);
+        
+        // Listen for theme changes from other pages
+        window.addEventListener('storage', (e) => {
+            if (e.key === `theme_${currentUser.id}`) {
+                this.applyTheme(e.newValue);
+            }
+        });
+
         this.initMobileMenu();
     }
 
     static applyTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (!currentUser) return;
+
+        // Remove all theme classes
+        document.documentElement.classList.remove('light', 'dark');
         document.body.classList.remove('light', 'dark');
+        
+        // Apply new theme
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.classList.add(theme);
         document.body.classList.add(theme);
         
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (currentUser) {
-            localStorage.setItem(`theme_${currentUser.id}`, theme);
-        }
+        // Store theme preference
+        localStorage.setItem(`theme_${currentUser.id}`, theme);
+        
+        // Broadcast theme change to other pages
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: `theme_${currentUser.id}`,
+            newValue: theme
+        }));
     }
 
     static initMobileMenu() {
+        // Only create menu toggle if it doesn't exist
         if (document.querySelector('.menu-toggle')) return;
 
         const menuToggle = document.createElement('button');
@@ -28,35 +52,17 @@ class ThemeManager {
         document.body.appendChild(menuToggle);
 
         const sidebar = document.querySelector('.sidebar');
-        if (!sidebar) return;
-
-        const toggleMenu = () => {
-            const isActive = sidebar.classList.contains('active');
-            sidebar.classList.toggle('active');
-            document.body.classList.toggle('sidebar-active');
-            menuToggle.innerHTML = isActive ? 
-                '<i class="fas fa-bars"></i>' : 
-                '<i class="fas fa-times"></i>';
-        };
-
+        
         menuToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            toggleMenu();
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-                sidebar.classList.remove('active');
-                document.body.classList.remove('sidebar-active');
-                menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-            }
+            sidebar.classList.toggle('active');
+            menuToggle.innerHTML = sidebar.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : 
+                '<i class="fas fa-bars"></i>';
         });
     }
 }
 
-// Initialize once DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => ThemeManager.init());
-} else {
-    ThemeManager.init();
-}
+// Initialize once DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => ThemeManager.init());
+window.addEventListener('load', () => ThemeManager.init());
