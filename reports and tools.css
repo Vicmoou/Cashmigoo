@@ -29,7 +29,8 @@
 }
 
 .report-card {
-    background: white;
+    background: var(--surface-color);
+    color: var(--text-primary);
     padding: 1.5rem;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -58,7 +59,7 @@
     display: flex;
     justify-content: space-between;
     padding: 0.5rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .budget-item:last-child {
@@ -73,6 +74,6 @@
 .no-data {
     text-align: center;
     padding: 2rem;
-    color: #666;
+    color: var(--text-secondary);
     font-style: italic;
 }
