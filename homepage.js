@@ -82,6 +82,33 @@ balanceChart = new Chart(balanceCtx, {
     }
 });
 
+// Add chart resize handler
+function handleChartResize(chart) {
+    const resizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+            chart.resize();
+        }
+    });
+
+    const chartContainer = document.querySelector('.chart-container');
+    if (chartContainer) {
+        resizeObserver.observe(chartContainer);
+    }
+}
+
+// Update chart initialization
+function initializeCharts() {
+    // ...existing chart initialization code...
+    
+    handleChartResize(balanceChart);
+    handleChartResize(expenseChart);
+}
+
+// Add window resize listener
+window.addEventListener('resize', () => {
+    [balanceChart, expenseChart].forEach(chart => chart.resize());
+});
+
 // Add currency change handler
 document.getElementById('currencySelector').addEventListener('change', function(e) {
     currentCurrency = e.target.value;
