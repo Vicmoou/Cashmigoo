@@ -13,20 +13,16 @@ document.getElementById('memberSince').textContent = new Date(currentUser.create
 const themeSelector = document.getElementById('themeSelector');
 const colorButtons = document.querySelectorAll('.color-btn');
 let currentTheme = localStorage.getItem(`theme_${currentUser.id}`) || 'light';
-let currentAccentColor = localStorage.getItem(`accent_${currentUser.id}`) || '#6366f1';
 
-// Initialize theme and accent color (simplified)
-document.documentElement.setAttribute('data-theme', currentTheme);
+// Set initial theme
 themeSelector.value = currentTheme;
+document.documentElement.setAttribute('data-theme', currentTheme);
+document.body.classList.add(currentTheme);
 
 // Theme selector event listener
 themeSelector.addEventListener('change', (e) => {
     const newTheme = e.target.value;
     ThemeManager.applyTheme(newTheme);
-    window.dispatchEvent(new StorageEvent('storage', {
-        key: `theme_${currentUser.id}`,
-        newValue: newTheme
-    }));
 });
 
 // Currency handling
