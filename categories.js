@@ -123,3 +123,9 @@ window.addEventListener('storage', (e) => {
         renderCategories();
     }
 });
+
+// Add logout handler
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    ThemeManager.logout();
+});

@@ -157,5 +157,11 @@ function renderDebts() {
     }).join('') || '<p>No debts or loans yet</p>';
 }
 
+// Add logout handler
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    ThemeManager.logout();
+});
+
 // Initial render
 renderDebts();

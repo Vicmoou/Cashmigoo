@@ -68,6 +68,32 @@ class ThemeManager {
                 '<i class="fas fa-bars"></i>';
         };
     }
+
+    static logout() {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser) {
+            // Clear all user-specific data
+            const userKeys = [
+                `theme_${currentUser.id}`,
+                `currency_${currentUser.id}`,
+                `transactions_${currentUser.id}`,
+                `categories_${currentUser.id}`,
+                `accounts_${currentUser.id}`,
+                `budgets_${currentUser.id}`,
+                `debts_${currentUser.id}`
+            ];
+            
+            userKeys.forEach(key => localStorage.removeItem(key));
+        }
+
+        // Clear session data
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentAccount');
+        sessionStorage.clear();
+        
+        // Redirect to login
+        window.location.replace('login.html');
+    }
 }
 
 // Initialize theme system

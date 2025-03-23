@@ -71,3 +71,9 @@ colorButtons.forEach(btn => {
 document.getElementById('editProfileBtn').addEventListener('click', () => {
     alert('Profile editing will be implemented soon!');
 });
+
+// Add logout handler
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    ThemeManager.logout();
+});

@@ -116,6 +116,12 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
     }
 });
 
+// Add logout handler
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    ThemeManager.logout();
+});
+
 // Render account info
 function renderAccountInfo() {
     accountInfo.innerHTML = `

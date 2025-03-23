@@ -214,6 +214,12 @@ window.addEventListener('storage', (e) => {
     }
 });
 
+// Add logout handler
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    ThemeManager.logout();
+});
+
 // Initial progress bar color update
 updateProgressBarColors();
 

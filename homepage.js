@@ -140,10 +140,9 @@ function updateCharts() {
 // Update welcome message
 document.querySelector('.logo').textContent = `Cashmigo - ${currentUser.name}`;
 
-// Logout functionality
+// Update logout functionality
 document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('currentUser');
-    window.location.href = 'login.html';
+    ThemeManager.logout();
 });
 
 // Add function to render recent transactions
