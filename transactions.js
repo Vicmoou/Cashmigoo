@@ -4,125 +4,53 @@ if (!currentUser) {
     window.location.href = 'login.html';
 }
 
-// Initialize theme
-ThemeManager.init();
+// Get current account ID and validate
+const currentAccountId = localStorage.getItem('currentAccount');
+if (!currentAccountId) {
+    window.location.href = 'accounts.html';
+}
 
-// Initialize DOM elements
-const modal = document.getElementById('categoryModal');
-const addCategoryBtn = document.getElementById('addCategoryBtn');
-const closeModalBtn = document.getElementById('closeModal');
-const incomeList = document.getElementById('incomeCategories');
-const expenseList = document.getElementById('expenseCategories');
-
-// Initialize categories data
+// Initialize data
+let accounts = JSON.parse(localStorage.getItem(`accounts_${currentUser.id}`)) || [];
+let currentAccount = accounts.find(acc => acc.id === currentAccountId);
+let allTransactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+let transactions = allTransactions.filter(t => t.accountId === currentAccountId);
 let categories = JSON.parse(localStorage.getItem(`categories_${currentUser.id}`)) || {
     income: [],
     expense: []
 };
 
+// DOM Elements
+const modal = document.getElementById('transactionModal');
+const addTransactionBtn = document.getElementById('addTransactionBtn');
+const closeModalBtn = document.getElementById('closeModal');
+const accountInfo = document.getElementById('accountInfo');
+const transactionsList = document.getElementById('transactionsList');
+
 // Show/hide modal
-addCategoryBtn.onclick = () => modal.style.display = 'block';
+addTransactionBtn.onclick = () => {
+    modal.style.display = 'block';
+    updateCategoryOptions('expense');
+};
 closeModalBtn.onclick = () => modal.style.display = 'none';
 
-// Handle category form submission
-document.getElementById('addCategoryForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+function updateCategoryOptions(transactionType) {
+    const categorySelect = document.getElementById('category');
+    categorySelect.innerHTML = '';
     
-    const name = document.getElementById('categoryName').value.trim();
-    const type = document.getElementById('categoryType').value;
-    const iconFile = document.getElementById('categoryIcon').files[0];
-    
-    if (!name) {
-        alert('Please enter a category name');
-        return;
-    }
-
-    const category = {
-        id: Date.now().toString(),
-        name: name,
-        icon: null
-    };
-
-    if (iconFile) {
-        try {
-            const base64Icon = await convertToBase64(iconFile);
-            category.icon = base64Icon;
-        } catch (error) {
-            console.error('Error converting icon:', error);
-        }
-    }
-
-    categories[type].push(category);
-    localStorage.setItem(`categories_${currentUser.id}`, JSON.stringify(categories));
-    
-    this.reset();
-    modal.style.display = 'none';
-    renderCategories();
-});
-
-// Convert file to base64
-function convertToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
+    categories[transactionType].forEach(cat => {
+        const option = new Option(cat.name, cat.id);
+        option.dataset.icon = cat.icon;
+        categorySelect.appendChild(option);
     });
 }
 
-// Delete category
-function deleteCategory(categoryId, type) {
-    if (!confirm('Are you sure you want to delete this category?')) return;
-    
-    categories[type] = categories[type].filter(cat => cat.id !== categoryId);
-    localStorage.setItem(`categories_${currentUser.id}`, JSON.stringify(categories));
-    renderCategories();
+// Format amount
+function formatAmount(amount) {
+    const userCurrency = localStorage.getItem(`currency_${currentUser.id}`) || 'USD';
+    const symbols = { USD: '$', EUR: '€', AOA: 'Kz', BRL: 'R$' };
+    return `${symbols[userCurrency]} ${Number(amount).toFixed(2)}`;
 }
-
-// Render categories with theme support
-function renderCategories() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    
-    incomeList.innerHTML = categories.income.map(category => `
-        <div class="category-item ${isDark ? 'dark' : ''}">
-            ${category.icon ? 
-              `<img src="${category.icon}" class="category-icon" alt="${category.name}">` : 
-              '<i class="fas fa-tag"></i>'
-            }
-            <span class="category-name">${category.name}</span>
-            <div class="category-actions">
-                <button onclick="deleteCategory('${category.id}', 'income')" class="btn-danger">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    `).join('');
-    
-    expenseList.innerHTML = categories.expense.map(category => `
-        <div class="category-item ${isDark ? 'dark' : ''}">
-            ${category.icon ? 
-              `<img src="${category.icon}" class="category-icon" alt="${category.name}">` : 
-              '<i class="fas fa-tag"></i>'
-            }
-            <span class="category-name">${category.name}</span>
-            <div class="category-actions">
-                <button onclick="deleteCategory('${category.id}', 'expense')" class="btn-danger">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Initial render
-renderCategories();
-
-// Update on theme change
-window.addEventListener('storage', (e) => {
-    if (e.key === `theme_${currentUser.id}`) {
-        renderCategories();
-    }
-});
 
 // Handle new transaction
 document.getElementById('addTransactionForm').addEventListener('submit', function(e) {
@@ -130,7 +58,7 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
 
     try {
         const type = document.getElementById('transactionType').value;
-        const amount = Math.abs(parseFloat(document.getElementById('amount').value)); // Ensure positive amount
+        const amount = Math.abs(parseFloat(document.getElementById('amount').value));
         const description = document.getElementById('description').value.trim();
         const categoryId = document.getElementById('category').value;
         const date = document.getElementById('date').value;
@@ -141,11 +69,7 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
         }
 
         const category = categories[type].find(c => c.id === categoryId);
-        if (!category) {
-            alert('Invalid category selected');
-            return;
-        }
-
+        
         const newTransaction = {
             id: Date.now().toString(),
             accountId: currentAccountId,
@@ -163,24 +87,26 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
         // Update account balance
         const balanceChange = type === 'income' ? amount : -amount;
         currentAccount.balance = Number((currentAccount.balance + balanceChange).toFixed(2));
-
-        // Update arrays
         accounts[accounts.findIndex(a => a.id === currentAccountId)] = currentAccount;
+        
+        // Update transactions
         allTransactions.push(newTransaction);
         transactions = allTransactions.filter(t => t.accountId === currentAccountId);
 
-        // Save to localStorage
+        // Save everything
         localStorage.setItem(`accounts_${currentUser.id}`, JSON.stringify(accounts));
         localStorage.setItem(`transactions_${currentUser.id}`, JSON.stringify(allTransactions));
 
-        // Update displays
+        // Update UI
         renderAccountInfo();
         renderTransactions();
-        
-        // Trigger storage event for homepage update
-        window.dispatchEvent(new Event('transactionsUpdated'));
 
-        // Close modal and reset form
+        // Notify other pages
+        window.dispatchEvent(new CustomEvent('transactionsUpdated', {
+            detail: { userId: currentUser.id }
+        }));
+
+        // Reset form and close modal
         modal.style.display = 'none';
         this.reset();
 
@@ -189,3 +115,45 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
         alert('Failed to add transaction. Please try again.');
     }
 });
+
+// Render account info
+function renderAccountInfo() {
+    accountInfo.innerHTML = `
+        <h2>${currentAccount.name}</h2>
+        <p>Type: ${currentAccount.type}</p>
+        <div class="account-balance">${formatAmount(currentAccount.balance)}</div>
+    `;
+}
+
+// Render transactions
+function renderTransactions() {
+    transactionsList.innerHTML = transactions
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .map(transaction => `
+            <div class="transaction-item">
+                <div class="transaction-info">
+                    <div class="transaction-description">
+                        ${transaction.categoryIcon ? 
+                          `<img src="${transaction.categoryIcon}" class="category-icon" alt="${transaction.categoryName}">` : 
+                          ''}
+                        ${transaction.description}
+                    </div>
+                    <div class="transaction-meta">
+                        <span class="transaction-category">${transaction.categoryName}</span>
+                        <span class="transaction-date">${new Date(transaction.date).toLocaleDateString()}</span>
+                    </div>
+                </div>
+                <div class="transaction-amount ${transaction.type}">
+                    ${formatAmount(transaction.amount)}
+                </div>
+            </div>
+        `).join('') || '<div class="no-transactions">No transactions yet</div>';
+}
+
+// Initialize
+document.getElementById('transactionType').addEventListener('change', function(e) {
+    updateCategoryOptions(e.target.value);
+});
+
+renderAccountInfo();
+renderTransactions();

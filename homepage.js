@@ -177,27 +177,29 @@ function renderRecentTransactions() {
         '<p class="no-transactions">No recent transactions</p>';
 }
 
-// Add transaction update listener
+// Add transaction update listener with proper event handling
 window.addEventListener('transactionsUpdated', () => {
-    // Reload transactions
+    // Reload all data
     transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
     userTransactions = transactions.filter(t => t.userId === currentUser.id);
 
-    // Recalculate totals
+    // Recalculate all totals
     totalBalance = userTransactions.reduce((acc, t) => 
         t.type === 'income' ? acc + t.amount : acc - t.amount, 0);
     
-    monthlyIncome = userTransactions.filter(t => 
-        t.type === 'income' && new Date(t.date).getMonth() === new Date().getMonth())
+    const currentMonth = new Date().getMonth();
+    monthlyIncome = userTransactions
+        .filter(t => t.type === 'income' && new Date(t.date).getMonth() === currentMonth)
         .reduce((acc, t) => acc + t.amount, 0);
     
-    monthlyExpenses = userTransactions.filter(t => 
-        t.type === 'expense' && new Date(t.date).getMonth() === new Date().getMonth())
+    monthlyExpenses = userTransactions
+        .filter(t => t.type === 'expense' && new Date(t.date).getMonth() === currentMonth)
         .reduce((acc, t) => acc + t.amount, 0);
 
-    // Update display
+    // Update everything
     updateDisplayAmounts();
     renderRecentTransactions();
+    updateCharts();
 });
 
 // Initial display update

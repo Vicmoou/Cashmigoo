@@ -37,19 +37,29 @@ window.addEventListener('storage', (e) => {
 // Initial chart theme update
 updateChartTheme();
 
-// Add transaction update listener
+// Update transaction listener
 window.addEventListener('transactionsUpdated', () => {
     const transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
     updateReports(transactions);
 });
 
 function updateReports(transactions) {
-    // Update charts with new data
-    updateChartData(transactions);
-    
-    // Update totals
+    // Group transactions by month
+    const monthlyData = transactions.reduce((acc, t) => {
+        const month = new Date(t.date).getMonth();
+        if (!acc[month]) {
+            acc[month] = { income: 0, expense: 0 };
+        }
+        if (t.type === 'income') {
+            acc[month].income += t.amount;
+        } else {
+            acc[month].expense += t.amount;
+        }
+        return acc;
+    }, {});
+
+    // Update charts
+    updateChartData(monthlyData);
     updateTotals(transactions);
-    
-    // Refresh report displays
     updateChartTheme();
 }
