@@ -108,6 +108,27 @@ function updateCharts() {
             }
         });
 
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            layout: {
+                padding: 20
+            },
+            animation: {
+                duration: 0 // Disable animations to prevent unwanted movement
+            },
+            resizeDelay: 100,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
+            }
+        };
+
         // Category spending chart
         window.categoryChart = new Chart(document.getElementById('categoryChart'), {
             type: 'pie',
@@ -122,20 +143,8 @@ function updateCharts() {
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: 20
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            boxWidth: 12,
-                            padding: 15
-                        }
-                    }
-                }
+                ...chartOptions,
+                aspectRatio: window.innerWidth <= 768 ? 4/3 : 16/9
             }
         });
 
@@ -155,11 +164,8 @@ function updateCharts() {
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: 20
-                },
+                ...chartOptions,
+                aspectRatio: window.innerWidth <= 768 ? 4/3 : 16/9,
                 scales: {
                     y: { 
                         beginAtZero: true,
@@ -194,20 +200,8 @@ function updateCharts() {
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: 20
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            boxWidth: 12,
-                            padding: 15
-                        }
-                    }
-                }
+                ...chartOptions,
+                aspectRatio: window.innerWidth <= 768 ? 4/3 : 16/9
             }
         });
 
@@ -315,11 +309,13 @@ window.addEventListener('transactionsUpdated', () => {
     updateCharts();
 });
 
-// Add resize handler
+// Debounce the resize handler to prevent excessive updates
+let resizeTimeout;
 window.addEventListener('resize', () => {
-    if (window.categoryChart) window.categoryChart.resize();
-    if (window.monthlyChart) window.monthlyChart.resize();
-    if (window.comparisonChart) window.comparisonChart.resize();
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        updateCharts();
+    }, 250);
 });
 
 // Initial chart theme update

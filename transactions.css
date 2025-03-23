@@ -143,8 +143,28 @@
         width: auto;
     }
 
+    .modal-content {
+        width: 90%;
+        max-width: none;
+        margin: 20px auto;
+        padding: 15px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 8px;
+    }
+
     .modal-buttons {
         flex-direction: column;
+        gap: 10px;
     }
 
     .modal-buttons button {
