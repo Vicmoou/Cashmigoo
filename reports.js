@@ -15,6 +15,61 @@ function initializeCharts() {
     const monthlyData = getMonthlyData(transactions);
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
+    // Category spending chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    const categoryData = getCategoryTotals(transactions);
+    
+    new Chart(categoryCtx, {
+        type: 'pie',
+        data: {
+            labels: categoryData.labels,
+            datasets: [{
+                data: categoryData.values,
+                backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6']
+            }]
+        }
+    });
+
+    // Monthly overview chart
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(monthlyCtx, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Income',
+                data: months.map((_, i) => monthlyData[i]?.income || 0),
+                backgroundColor: '#10b981'
+            }, {
+                label: 'Expenses',
+                data: months.map((_, i) => monthlyData[i]?.expense || 0),
+                backgroundColor: '#ef4444'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Income vs Expenses chart
+    const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+    const totals = getTransactionTotals(transactions);
+    
+    new Chart(comparisonCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Income', 'Expenses'],
+            datasets: [{
+                data: [totals.income, totals.expenses],
+                backgroundColor: ['#10b981', '#ef4444']
+            }]
+        }
+    });
+
     // Income/Expense Chart
     const incomeExpenseCtx = document.getElementById('incomeExpenseChart').getContext('2d');
     expenseChart = new Chart(incomeExpenseCtx, {
@@ -48,6 +103,32 @@ function getMonthlyData(transactions) {
         else acc[month].expense += t.amount;
         return acc;
     }, {});
+}
+
+function getCategoryTotals(transactions) {
+    const categoryTotals = transactions.reduce((acc, t) => {
+        if (!acc[t.categoryName]) {
+            acc[t.categoryName] = 0;
+        }
+        acc[t.categoryName] += t.amount;
+        return acc;
+    }, {});
+
+    return {
+        labels: Object.keys(categoryTotals),
+        values: Object.values(categoryTotals)
+    };
+}
+
+function getTransactionTotals(transactions) {
+    return transactions.reduce((acc, t) => {
+        if (t.type === 'income') {
+            acc.income += t.amount;
+        } else {
+            acc.expenses += t.amount;
+        }
+        return acc;
+    }, { income: 0, expenses: 0 });
 }
 
 function updateTotals(transactions) {
@@ -119,25 +200,44 @@ function updateReports(transactions) {
 
 // Export functionality
 document.getElementById('exportBtn').addEventListener('click', function() {
-    const data = transactions.map(t => ({
-        Date: new Date(t.date).toLocaleDateString(),
-        Type: t.type,
-        Category: t.categoryName,
-        Description: t.description,
-        Amount: t.amount
-    }));
+    try {
+        // Format data for export
+        const exportData = transactions.map(t => ({
+            Date: new Date(t.date).toLocaleDateString(),
+            Type: t.type.charAt(0).toUpperCase() + t.type.slice(1),
+            Category: t.categoryName,
+            Description: t.description,
+            Amount: formatAmount(t.amount),
+            Account: t.accountName || 'N/A'
+        }));
 
-    const csvContent = "data:text/csv;charset=utf-8," + 
-        "Date,Type,Category,Description,Amount\n" +
-        data.map(row => Object.values(row).join(",")).join("\n");
+        // Create CSV content
+        const headers = Object.keys(exportData[0]);
+        const csvRows = [
+            headers.join(','),
+            ...exportData.map(row => 
+                headers.map(header => 
+                    `"${row[header]}"`
+                ).join(',')
+            )
+        ];
+        const csvContent = csvRows.join('\n');
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "transactions.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+        // Create and trigger download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `transactions_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+    } catch (error) {
+        console.error('Export error:', error);
+        alert('Failed to export data. Please try again.');
+    }
 });
 
 // Add logout handler
