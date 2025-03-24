@@ -213,6 +213,42 @@ window.addEventListener('storage', (e) => {
     }
 });
 
+// Add storage event listeners
+window.addEventListener('storage', (e) => {
+    if (e.key === `transactions_${currentUser.id}`) {
+        // Reload all data
+        transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+        userTransactions = transactions.filter(t => t.userId === currentUser.id);
+
+        // Recalculate monthly totals
+        const currentMonth = new Date().getMonth();
+        monthlyIncome = userTransactions
+            .filter(t => t.type === 'income' && new Date(t.date).getMonth() === currentMonth)
+            .reduce((acc, t) => acc + t.amount, 0);
+        
+        monthlyExpenses = userTransactions
+            .filter(t => t.type === 'expense' && new Date(t.date).getMonth() === currentMonth)
+            .reduce((acc, t) => acc + t.amount, 0);
+
+        // Update everything
+        updateDisplayAmounts();
+        updateCharts();
+        renderRecentTransactions();
+    }
+});
+
+// Add direct event listener for transactions
+window.addEventListener('transactionsUpdated', () => {
+    const updatedTransactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+    if (JSON.stringify(transactions) !== JSON.stringify(updatedTransactions)) {
+        transactions = updatedTransactions;
+        userTransactions = transactions.filter(t => t.userId === currentUser.id);
+        updateDisplayAmounts();
+        updateCharts();
+        renderRecentTransactions();
+    }
+});
+
 // Initial display update
 updateDisplayAmounts();
 renderRecentTransactions();

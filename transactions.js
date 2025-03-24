@@ -152,8 +152,36 @@ function renderTransactions() {
                 <div class="transaction-amount ${transaction.type}">
                     ${formatAmount(transaction.amount)}
                 </div>
+                <div class="transaction-actions">
+                    <button onclick="deleteTransaction('${transaction.id}')" class="btn-danger">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
             </div>
         `).join('') || '<div class="no-transactions">No transactions yet</div>';
+}
+
+// Add delete transaction function
+function deleteTransaction(id) {
+    if (!confirm('Are you sure you want to delete this transaction?')) return;
+    
+    // Find transaction and related account
+    const transaction = transactions.find(t => t.id === id);
+    const account = accounts.find(a => a.id === transaction.accountId);
+    
+    // Revert account balance
+    if (account) {
+        account.balance += transaction.type === 'expense' ? transaction.amount : -transaction.amount;
+        localStorage.setItem(`accounts_${currentUser.id}`, JSON.stringify(accounts));
+    }
+    
+    // Remove transaction
+    transactions = transactions.filter(t => t.id !== id);
+    localStorage.setItem(`transactions_${currentUser.id}`, JSON.stringify(transactions));
+    
+    // Update display
+    renderTransactions();
+    updateAccountInfo();
 }
 
 // Initialize

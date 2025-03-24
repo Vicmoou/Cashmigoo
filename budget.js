@@ -13,7 +13,7 @@ const categories = JSON.parse(localStorage.getItem(`categories_${currentUser.id}
     income: [],
     expense: []
 };
-const transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+let transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
 
 // DOM Elements
 const modal = document.getElementById('budgetModal');
@@ -211,6 +211,14 @@ function updateProgressBarColors() {
 window.addEventListener('storage', (e) => {
     if (e.key === `theme_${currentUser.id}`) {
         updateProgressBarColors();
+    }
+});
+
+// Add storage event listeners
+window.addEventListener('storage', (e) => {
+    if (e.key === `transactions_${currentUser.id}`) {
+        transactions = JSON.parse(e.newValue) || [];
+        renderBudgets();
     }
 });
 

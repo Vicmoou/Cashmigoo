@@ -42,8 +42,79 @@
 /* Remove modal styles - now in modals.css */
 .account-actions {
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
     margin-top: 1rem;
+}
+
+.account-actions button {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.account-actions button i {
+    font-size: 1.1rem;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn-secondary {
+    background: var(--surface-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--border-color);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220,53,69,0.2);
+}
+
+@media screen and (max-width: 768px) {
+    .account-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .account-actions button span {
+        display: none;  /* Hide text on mobile */
+    }
+
+    .account-actions button i {
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    .account-actions button {
+        padding: 0.5rem;
+    }
 }
 
 [data-theme="dark"] .account-card {

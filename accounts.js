@@ -150,9 +150,18 @@ function renderAccounts() {
             <p>Type: ${account.type}</p>
             <div class="account-balance">${formatAmount(account.balance)}</div>
             <div class="account-actions">
-                <button onclick="viewTransactions('${account.id}')" class="btn-secondary">View Transactions</button>
-                <button onclick="showAdjustBalance('${account.id}')" class="btn-primary">Adjust Balance</button>
-                <button onclick="deleteAccount('${account.id}')" class="btn-danger">Delete</button>
+                <button onclick="viewTransactions('${account.id}')" class="btn-secondary">
+                    <i class="fas fa-list-ul"></i>
+                    <span>Transactions</span>
+                </button>
+                <button onclick="showAdjustBalance('${account.id}')" class="btn-primary">
+                    <i class="fas fa-pencil-alt"></i>
+                    <span>Adjust</span>
+                </button>
+                <button onclick="deleteAccount('${account.id}')" class="btn-danger">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Delete</span>
+                </button>
             </div>
         </div>
     `).join('');

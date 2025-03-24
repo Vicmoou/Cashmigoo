@@ -300,6 +300,23 @@ window.addEventListener('storage', (e) => {
     }
 });
 
+// Add storage event listeners
+window.addEventListener('storage', (e) => {
+    if (e.key === `transactions_${currentUser.id}`) {
+        transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+        updateCharts();
+    }
+});
+
+// Add direct event listener for transactions
+window.addEventListener('transactionsUpdated', () => {
+    const updatedTransactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+    if (JSON.stringify(transactions) !== JSON.stringify(updatedTransactions)) {
+        transactions = updatedTransactions;
+        updateCharts();
+    }
+});
+
 // Add transaction update listener
 window.addEventListener('transactionsUpdated', () => {
     // Reload transactions data
