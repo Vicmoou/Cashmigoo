@@ -27,20 +27,13 @@ const closeModalBtn = document.getElementById('closeModal');
 const accountInfo = document.getElementById('accountInfo');
 const transactionsList = document.getElementById('transactionsList');
 
-// Add after initial data loading
-const startDateInput = document.getElementById('startDate');
-const endDateInput = document.getElementById('endDate');
-
-// Set default date range (last 30 days)
+// Set default date to today
 const today = new Date();
-const thirtyDaysAgo = new Date();
-thirtyDaysAgo.setDate(today.getDate() - 30);
-startDateInput.value = thirtyDaysAgo.toISOString().split('T')[0];
-endDateInput.value = today.toISOString().split('T')[0];
+document.getElementById('dateFilter').value = today.toISOString().split('T')[0];
+document.getElementById('date').value = today.toISOString().split('T')[0];  // Set default date for new transactions
 
-// Add date filter listeners
-startDateInput.addEventListener('change', renderTransactions);
-endDateInput.addEventListener('change', renderTransactions);
+// Add date filter listener
+document.getElementById('dateFilter').addEventListener('change', renderTransactions);
 
 // Show/hide modal
 addTransactionBtn.onclick = () => {
@@ -148,16 +141,11 @@ function renderAccountInfo() {
 
 // Render transactions
 function renderTransactions() {
-    const startDate = new Date(startDateInput.value);
-    const endDate = new Date(endDateInput.value);
-    endDate.setHours(23, 59, 59); // Include entire end date
+    const selectedDate = document.getElementById('dateFilter').value;
 
     const filteredTransactions = transactions
-        .filter(t => {
-            const transactionDate = new Date(t.date);
-            return transactionDate >= startDate && transactionDate <= endDate;
-        })
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
+        .filter(t => t.date === selectedDate)
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     transactionsList.innerHTML = filteredTransactions.length ? 
         filteredTransactions.map(transaction => `
@@ -184,7 +172,7 @@ function renderTransactions() {
                 </div>
             </div>
         `).join('') : 
-        '<div class="no-transactions">No transactions found for the selected date range</div>';
+        '<div class="no-transactions">No transactions found for the selected date</div>';
 }
 
 // Add delete transaction function

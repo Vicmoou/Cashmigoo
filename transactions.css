@@ -142,16 +142,19 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    justify-content: center;
 }
 
 .date-filter input[type="date"] {
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 1rem;
 }
 
 .date-filter label {
     color: #666;
+    font-weight: 500;
 }
 
 /* Add responsive design */
