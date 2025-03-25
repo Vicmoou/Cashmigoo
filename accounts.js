@@ -36,6 +36,11 @@ const adjustBalanceModal = document.getElementById('adjustBalanceModal');
 const closeAdjustModalBtn = document.getElementById('closeAdjustModal');
 const adjustBalanceForm = document.getElementById('adjustBalanceForm');
 
+// Add new DOM elements for transfer modal
+const transferModal = document.getElementById('transferModal');
+const closeTransferBtn = document.getElementById('closeTransferModal');
+const transferForm = document.getElementById('transferForm');
+
 // Show/hide modal
 addAccountBtn.onclick = () => modal.style.display = 'block';
 closeModalBtn.onclick = () => modal.style.display = 'none';
@@ -46,6 +51,9 @@ window.onclick = (e) => {
 // Show/hide adjust balance modal
 closeAdjustModalBtn.onclick = () => adjustBalanceModal.style.display = 'none';
 
+// Show/hide transfer modal
+closeTransferBtn.onclick = () => transferModal.style.display = 'none';
+
 // Show adjust balance modal
 function showAdjustBalance(accountId) {
     const account = accounts.find(a => a.id === accountId);
@@ -54,6 +62,32 @@ function showAdjustBalance(accountId) {
     document.getElementById('adjustAccountId').value = accountId;
     document.getElementById('adjustmentAmount').value = account.balance;
     adjustBalanceModal.style.display = 'block';
+}
+
+// Show transfer modal and populate accounts
+function showTransfer(accountId) {
+    const account = accounts.find(a => a.id === accountId);
+    if (!account) {
+        alert('Account not found');
+        return;
+    }
+    
+    document.getElementById('fromAccountId').value = accountId;
+    
+    // Populate destination account dropdown
+    const toAccountSelect = document.getElementById('toAccountId');
+    const otherAccounts = accounts.filter(a => a.id !== accountId);
+    
+    if (otherAccounts.length === 0) {
+        alert('No other accounts available for transfer');
+        return;
+    }
+    
+    toAccountSelect.innerHTML = otherAccounts
+        .map(a => `<option value="${a.id}">${a.name} (${formatAmount(a.balance)})</option>`)
+        .join('');
+        
+    transferModal.style.display = 'block';
 }
 
 // Handle account creation
@@ -131,6 +165,65 @@ adjustBalanceForm.addEventListener('submit', function(e) {
     adjustBalanceForm.reset();
 });
 
+// Handle transfer submission
+transferForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const fromAccountId = document.getElementById('fromAccountId').value;
+    const toAccountId = document.getElementById('toAccountId').value;
+    const amount = parseFloat(document.getElementById('transferAmount').value);
+    const note = document.getElementById('transferNote').value;
+    
+    const fromAccount = accounts.find(a => a.id === fromAccountId);
+    const toAccount = accounts.find(a => a.id === toAccountId);
+    
+    if (!fromAccount || !toAccount || amount <= 0 || fromAccount.balance < amount) {
+        alert('Invalid transfer. Please check the amount and try again.');
+        return;
+    }
+    
+    // Create transfer transactions
+    const transferOut = {
+        id: Date.now().toString(),
+        accountId: fromAccountId,
+        type: 'expense',
+        amount: amount,
+        description: `Transfer to ${toAccount.name}: ${note}`,
+        categoryId: 'transfer',
+        categoryName: 'Transfer',
+        date: new Date().toISOString().split('T')[0],
+        createdAt: new Date().toISOString()
+    };
+    
+    const transferIn = {
+        id: (Date.now() + 1).toString(),
+        accountId: toAccountId,
+        type: 'income',
+        amount: amount,
+        description: `Transfer from ${fromAccount.name}: ${note}`,
+        categoryId: 'transfer',
+        categoryName: 'Transfer',
+        date: new Date().toISOString().split('T')[0],
+        createdAt: new Date().toISOString()
+    };
+    
+    // Update account balances
+    fromAccount.balance -= amount;
+    toAccount.balance += amount;
+    
+    // Save all changes
+    const transactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
+    transactions.push(transferOut, transferIn);
+    
+    localStorage.setItem(`accounts_${currentUser.id}`, JSON.stringify(accounts));
+    localStorage.setItem(`transactions_${currentUser.id}`, JSON.stringify(transactions));
+    
+    // Update display
+    renderAccounts();
+    transferModal.style.display = 'none';
+    this.reset();
+});
+
 // Convert image to base64
 function convertImageToBase64(file) {
     return new Promise((resolve, reject) => {
@@ -150,22 +243,49 @@ function renderAccounts() {
             <p>Type: ${account.type}</p>
             <div class="account-balance">${formatAmount(account.balance)}</div>
             <div class="account-actions">
-                <button onclick="viewTransactions('${account.id}')" class="btn-secondary">
-                    <i class="fas fa-list-ul"></i>
-                    <span>Transactions</span>
+                <button onclick="toggleMenu('${account.id}')" class="menu-trigger">
+                    <i class="fas fa-ellipsis-v"></i>
                 </button>
-                <button onclick="showAdjustBalance('${account.id}')" class="btn-primary">
-                    <i class="fas fa-pencil-alt"></i>
-                    <span>Adjust</span>
-                </button>
-                <button onclick="deleteAccount('${account.id}')" class="btn-danger">
-                    <i class="fas fa-trash-alt"></i>
-                    <span>Delete</span>
-                </button>
+                <div id="menu-${account.id}" class="dropdown-menu">
+                    <button onclick="viewTransactions('${account.id}')" class="menu-item">
+                        <i class="fas fa-list-ul"></i>
+                        <span>Transactions</span>
+                    </button>
+                    <button onclick="showAdjustBalance('${account.id}')" class="menu-item">
+                        <i class="fas fa-pencil-alt"></i>
+                        <span>Adjust</span>
+                    </button>
+                    <button onclick="showTransfer('${account.id}')" class="menu-item">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Transfer</span>
+                    </button>
+                    <button onclick="deleteAccount('${account.id}')" class="menu-item delete">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>Delete</span>
+                    </button>
+                </div>
             </div>
         </div>
     `).join('');
 }
+
+// Add menu toggle functionality
+function toggleMenu(accountId) {
+    const menu = document.getElementById(`menu-${accountId}`);
+    document.querySelectorAll('.dropdown-menu').forEach(m => {
+        if (m !== menu) m.classList.remove('show');
+    });
+    menu.classList.toggle('show');
+}
+
+// Close menus when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.matches('.menu-trigger, .menu-trigger *')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.remove('show');
+        });
+    }
+});
 
 // Add delete account function
 function deleteAccount(accountId) {

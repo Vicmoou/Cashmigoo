@@ -135,6 +135,32 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Add Transfer Modal -->
+            <div id="transferModal" class="modal">
+                <div class="modal-content">
+                    <h2>Transfer Money</h2>
+                    <form id="transferForm">
+                        <input type="hidden" id="fromAccountId">
+                        <div class="form-group">
+                            <label for="toAccountId">To Account</label>
+                            <select id="toAccountId" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="transferAmount">Amount</label>
+                            <input type="number" id="transferAmount" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="transferNote">Note</label>
+                            <input type="text" id="transferNote" placeholder="Reason for transfer" required>
+                        </div>
+                        <div class="modal-buttons">
+                            <button type="submit" class="btn-primary">Transfer</button>
+                            <button type="button" class="btn-secondary" id="closeTransferModal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </main>
     </div>
     
