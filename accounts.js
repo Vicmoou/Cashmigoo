@@ -138,13 +138,15 @@ adjustBalanceForm.addEventListener('submit', function(e) {
     // Create adjustment transaction
     const adjustmentTransaction = {
         id: Date.now().toString(),
-        accountId: accountId,
+        accountId: accountId,d,
         type: adjustment >= 0 ? 'income' : 'expense',
+        type: adjustment > 0 ? 'income' : 'expense',
         amount: Math.abs(adjustment),
         description: `Balance adjustment: ${note}`,
         categoryId: 'adjustment',
         categoryName: 'Balance Adjustment',
         date: new Date().toISOString().split('T')[0],
+        includeInReports: document.getElementById('includeInReports').checked,
         createdAt: new Date().toISOString()
     };
     

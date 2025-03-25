@@ -110,6 +110,7 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
         const description = document.getElementById('description').value.trim();
         const categoryId = document.getElementById('category').value;
         const date = document.getElementById('date').value;
+        const includeInReports = document.getElementById('includeInReports').checked;
 
         if (!type || isNaN(amount) || !description || !categoryId || !date) {
             alert('Please fill all fields correctly');
@@ -129,6 +130,7 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
             categoryName: category.name,
             categoryIcon: category.icon,
             date,
+            includeInReports,
             createdAt: new Date().toISOString()
         };
 
