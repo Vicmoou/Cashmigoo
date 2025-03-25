@@ -128,6 +128,7 @@ adjustBalanceForm.addEventListener('submit', function(e) {
     const accountId = document.getElementById('adjustAccountId').value;
     const newBalance = parseFloat(document.getElementById('adjustmentAmount').value);
     const note = document.getElementById('adjustmentNote').value;
+    const includeInReports = document.getElementById('adjustmentIncludeInReports').checked || false;
     
     const account = accounts.find(a => a.id === accountId);
     if (!account) return;
@@ -138,15 +139,15 @@ adjustBalanceForm.addEventListener('submit', function(e) {
     // Create adjustment transaction
     const adjustmentTransaction = {
         id: Date.now().toString(),
-        accountId: accountId,d,
-        type: adjustment >= 0 ? 'income' : 'expense',
+        accountId: accountId,
+        userId: currentUser.id,
         type: adjustment > 0 ? 'income' : 'expense',
         amount: Math.abs(adjustment),
         description: `Balance adjustment: ${note}`,
         categoryId: 'adjustment',
         categoryName: 'Balance Adjustment',
         date: new Date().toISOString().split('T')[0],
-        includeInReports: document.getElementById('includeInReports').checked,
+        includeInReports,
         createdAt: new Date().toISOString()
     };
     
@@ -161,10 +162,11 @@ adjustBalanceForm.addEventListener('submit', function(e) {
     transactions.push(adjustmentTransaction);
     localStorage.setItem(`transactions_${currentUser.id}`, JSON.stringify(transactions));
     
-    // Update display
+    // Update display and notify other pages
     renderAccounts();
     adjustBalanceModal.style.display = 'none';
     adjustBalanceForm.reset();
+    window.dispatchEvent(new CustomEvent('transactionsUpdated'));
 });
 
 // Handle transfer submission
