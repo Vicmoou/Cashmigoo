@@ -139,7 +139,7 @@ adjustBalanceForm.addEventListener('submit', function(e) {
     // Create adjustment transaction
     const adjustmentTransaction = {
         id: Date.now().toString(),
-        accountId: accountId,
+        accountId: accountId,  // Remove the extra 'd' that was here
         userId: currentUser.id,
         type: adjustment > 0 ? 'income' : 'expense',
         amount: Math.abs(adjustment),
