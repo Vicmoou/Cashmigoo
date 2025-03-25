@@ -23,7 +23,10 @@ function formatAmount(amount) {
 function getFilteredTransactions(days) {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
-    return transactions.filter(t => new Date(t.date) >= cutoffDate);
+    return transactions.filter(t => 
+        new Date(t.date) >= cutoffDate && 
+        t.includeInReports !== false  // Add this condition
+    );
 }
 
 // Calculate category totals

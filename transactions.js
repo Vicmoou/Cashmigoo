@@ -105,12 +105,13 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
         // Create backup before making changes
         backupTransactions();
 
+        // Get all form values
         const type = document.getElementById('transactionType').value;
         const amount = Math.abs(parseFloat(document.getElementById('amount').value));
         const description = document.getElementById('description').value.trim();
         const categoryId = document.getElementById('category').value;
         const date = document.getElementById('date').value;
-        const includeInReports = document.getElementById('includeInReports').checked;
+        const includeInReports = document.getElementById('includeInReports').checked || false; // Add || false
 
         if (!type || isNaN(amount) || !description || !categoryId || !date) {
             alert('Please fill all fields correctly');
@@ -118,6 +119,10 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
         }
 
         const category = categories[type].find(c => c.id === categoryId);
+        if (!category) {
+            alert('Please select a valid category');
+            return;
+        }
         
         const newTransaction = {
             id: Date.now().toString(),
@@ -139,11 +144,11 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
         currentAccount.balance = Number((currentAccount.balance + balanceChange).toFixed(2));
         accounts[accounts.findIndex(a => a.id === currentAccountId)] = currentAccount;
         
-        // Update transactions
+        // Update transactions arrays
         allTransactions.push(newTransaction);
         transactions = allTransactions.filter(t => t.accountId === currentAccountId);
 
-        // Save everything
+        // Save to localStorage
         localStorage.setItem(`accounts_${currentUser.id}`, JSON.stringify(accounts));
         localStorage.setItem(`transactions_${currentUser.id}`, JSON.stringify(allTransactions));
 
@@ -152,18 +157,16 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
         renderTransactions();
 
         // Notify other pages
-        window.dispatchEvent(new CustomEvent('transactionsUpdated', {
-            detail: { userId: currentUser.id }
-        }));
+        window.dispatchEvent(new CustomEvent('transactionsUpdated'));
 
         // Reset form and close modal
         modal.style.display = 'none';
-        this.reset();
+        document.getElementById('addTransactionForm').reset();
+        document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
     } catch (error) {
         console.error('Error adding transaction:', error);
         alert('Failed to add transaction. Please try again.');
-        // Attempt to restore from backup if something goes wrong
         restoreTransactions();
     }
 });
@@ -193,13 +196,16 @@ function renderTransactions() {
 
     transactionsList.innerHTML = filteredTransactions.length ? 
         filteredTransactions.map(transaction => `
-            <div class="transaction-item">
+            <div class="transaction-item ${transaction.includeInReports === false ? 'excluded-from-reports' : ''}">
                 <div class="transaction-info">
                     <div class="transaction-description">
                         ${transaction.categoryIcon ? 
                           `<img src="${transaction.categoryIcon}" class="category-icon" alt="${transaction.categoryName}">` : 
                           ''}
                         ${transaction.description}
+                        ${transaction.includeInReports === false ? 
+                          '<span class="report-status">(Excluded from Reports)</span>' : 
+                          ''}
                     </div>
                     <div class="transaction-meta">
                         <span class="transaction-category">${transaction.categoryName}</span>
@@ -224,7 +230,7 @@ function deleteTransaction(id) {
     if (!confirm('Are you sure you want to delete this transaction?')) return;
     
     // Find transaction and related account
-    const transaction = transactions.find(t => t.id === id);
+    const transaction = allTransactions.find(t => t.id === id);
     const account = accounts.find(a => a.id === transaction.accountId);
     
     // Revert account balance
@@ -233,13 +239,19 @@ function deleteTransaction(id) {
         localStorage.setItem(`accounts_${currentUser.id}`, JSON.stringify(accounts));
     }
     
-    // Remove transaction
-    transactions = transactions.filter(t => t.id !== id);
-    localStorage.setItem(`transactions_${currentUser.id}`, JSON.stringify(transactions));
+    // Remove transaction from both arrays
+    allTransactions = allTransactions.filter(t => t.id !== id);
+    transactions = allTransactions.filter(t => t.accountId === currentAccountId);
+    
+    // Save to localStorage
+    localStorage.setItem(`transactions_${currentUser.id}`, JSON.stringify(allTransactions));
     
     // Update display
     renderTransactions();
-    updateAccountInfo();
+    renderAccountInfo();
+    
+    // Notify other pages
+    window.dispatchEvent(new CustomEvent('transactionsUpdated'));
 }
 
 // Initialize

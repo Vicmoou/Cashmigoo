@@ -175,6 +175,7 @@ transferForm.addEventListener('submit', function(e) {
     const toAccountId = document.getElementById('toAccountId').value;
     const amount = parseFloat(document.getElementById('transferAmount').value);
     const note = document.getElementById('transferNote').value;
+    const includeInReports = document.getElementById('transferIncludeInReports').checked || false;
     
     const fromAccount = accounts.find(a => a.id === fromAccountId);
     const toAccount = accounts.find(a => a.id === toAccountId);
@@ -188,24 +189,28 @@ transferForm.addEventListener('submit', function(e) {
     const transferOut = {
         id: Date.now().toString(),
         accountId: fromAccountId,
+        userId: currentUser.id,
         type: 'expense',
         amount: amount,
         description: `Transfer to ${toAccount.name}: ${note}`,
         categoryId: 'transfer',
         categoryName: 'Transfer',
         date: new Date().toISOString().split('T')[0],
+        includeInReports,
         createdAt: new Date().toISOString()
     };
     
     const transferIn = {
         id: (Date.now() + 1).toString(),
         accountId: toAccountId,
+        userId: currentUser.id,
         type: 'income',
         amount: amount,
         description: `Transfer from ${fromAccount.name}: ${note}`,
         categoryId: 'transfer',
         categoryName: 'Transfer',
         date: new Date().toISOString().split('T')[0],
+        includeInReports,
         createdAt: new Date().toISOString()
     };
     
@@ -224,6 +229,9 @@ transferForm.addEventListener('submit', function(e) {
     renderAccounts();
     transferModal.style.display = 'none';
     this.reset();
+    
+    // Notify other pages
+    window.dispatchEvent(new CustomEvent('transactionsUpdated'));
 });
 
 // Convert image to base64

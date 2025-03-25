@@ -120,6 +120,23 @@ document.getElementById('currencySelector').addEventListener('change', function(
 });
 
 function updateDisplayAmounts() {
+    const currentMonth = new Date().getMonth();
+    monthlyIncome = userTransactions
+        .filter(t => 
+            t.type === 'income' && 
+            new Date(t.date).getMonth() === currentMonth &&
+            t.includeInReports !== false
+        )
+        .reduce((acc, t) => acc + t.amount, 0);
+    
+    monthlyExpenses = userTransactions
+        .filter(t => 
+            t.type === 'expense' && 
+            new Date(t.date).getMonth() === currentMonth &&
+            t.includeInReports !== false
+        )
+        .reduce((acc, t) => acc + t.amount, 0);
+
     document.getElementById('totalBalance').textContent = formatAmount(totalBalance);
     document.getElementById('monthlyIncome').textContent = formatAmount(monthlyIncome);
     document.getElementById('monthlyExpenses').textContent = formatAmount(monthlyExpenses);
@@ -151,6 +168,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 function renderRecentTransactions() {
     const recentTransactionsList = document.getElementById('recentTransactionsList');
     const sortedTransactions = userTransactions
+        .filter(t => t.includeInReports !== false) // Add this filter
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 5); // Get only 5 most recent transactions
 
