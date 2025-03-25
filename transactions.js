@@ -11,10 +11,25 @@ if (!currentAccountId) {
 }
 
 // Initialize data
+const storedTransactions = localStorage.getItem(`transactions_${currentUser.id}`);
+let allTransactions = [];
+let transactions = [];
+
+try {
+    // Try to parse existing transactions first
+    if (storedTransactions) {
+        allTransactions = JSON.parse(storedTransactions);
+        transactions = allTransactions.filter(t => t.accountId === currentAccountId);
+    }
+} catch (error) {
+    console.error('Error loading transactions:', error);
+    // If there's an error, initialize with empty arrays
+    allTransactions = [];
+    transactions = [];
+}
+
 let accounts = JSON.parse(localStorage.getItem(`accounts_${currentUser.id}`)) || [];
 let currentAccount = accounts.find(acc => acc.id === currentAccountId);
-let allTransactions = JSON.parse(localStorage.getItem(`transactions_${currentUser.id}`)) || [];
-let transactions = allTransactions.filter(t => t.accountId === currentAccountId);
 let categories = JSON.parse(localStorage.getItem(`categories_${currentUser.id}`)) || {
     income: [],
     expense: []
@@ -60,11 +75,36 @@ function formatAmount(amount) {
     return `${symbols[userCurrency]} ${Number(amount).toFixed(2)}`;
 }
 
+// Add backup functionality
+function backupTransactions() {
+    const backup = {
+        date: new Date().toISOString(),
+        transactions: allTransactions
+    };
+    localStorage.setItem(`transactions_backup_${currentUser.id}`, JSON.stringify(backup));
+}
+
+// Add restore functionality
+function restoreTransactions() {
+    const backup = localStorage.getItem(`transactions_backup_${currentUser.id}`);
+    if (backup) {
+        const { transactions: restoredTransactions } = JSON.parse(backup);
+        allTransactions = restoredTransactions;
+        transactions = allTransactions.filter(t => t.accountId === currentAccountId);
+        localStorage.setItem(`transactions_${currentUser.id}`, JSON.stringify(allTransactions));
+        renderTransactions();
+        renderAccountInfo();
+    }
+}
+
 // Handle new transaction
 document.getElementById('addTransactionForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
     try {
+        // Create backup before making changes
+        backupTransactions();
+
         const type = document.getElementById('transactionType').value;
         const amount = Math.abs(parseFloat(document.getElementById('amount').value));
         const description = document.getElementById('description').value.trim();
@@ -121,6 +161,8 @@ document.getElementById('addTransactionForm').addEventListener('submit', functio
     } catch (error) {
         console.error('Error adding transaction:', error);
         alert('Failed to add transaction. Please try again.');
+        // Attempt to restore from backup if something goes wrong
+        restoreTransactions();
     }
 });
 
