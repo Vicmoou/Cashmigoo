@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categories - Cashmigo</title>
+    <link rel="stylesheet" href="responsive.css">
     <link rel="stylesheet" href="homepage.css">
     <link rel="stylesheet" href="categories.css">
     <link rel="stylesheet" href="modals.css">
@@ -13,7 +14,12 @@
     <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
-    <div class="sidebar">
+    <!-- Mobile menu toggle button -->
+    <button class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-logo">Cashmigo</div>
         <ul class="nav-list">
             <li class="nav-item">
@@ -120,6 +126,7 @@
     </div>
     <script src="js/themeManager.js"></script>
     <script>ThemeManager.init();</script>
+    <script src="utils.js"></script>
     <script src="categories.js"></script>
 </body>
 </html>

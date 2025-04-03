@@ -20,6 +20,11 @@ let categories = JSON.parse(localStorage.getItem(`categories_${currentUser.id}`)
     expense: []
 };
 
+// Initialize mobile utilities
+if (window.MobileUtils) {
+    MobileUtils.init();
+}
+
 // Show/hide modal
 addCategoryBtn.onclick = () => modal.style.display = 'block';
 closeModalBtn.onclick = () => modal.style.display = 'none';

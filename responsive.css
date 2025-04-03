@@ -1,0 +1,152 @@
+/* 
+ * Cashmigo Responsive CSS
+ * Global responsive styles for all pages
+ */
+
+/* Responsive base styles */
+:root {
+    --mobile-padding: 1rem;
+    --tablet-padding: 1.5rem;
+}
+
+/* Base mobile-first adjustments */
+html {
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    /* Mobile viewport height fix */
+    min-height: calc(var(--vh, 1vh) * 100);
+}
+
+/* General responsive utilities */
+.hide-on-mobile {
+    display: none !important;
+}
+
+.show-on-mobile {
+    display: block !important;
+}
+
+/* Mobile-first containers */
+.container {
+    width: 100%;
+    padding: var(--mobile-padding);
+}
+
+/* Responsive images */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Form elements responsive */
+input, select, textarea, button {
+    max-width: 100%;
+}
+
+/* Responsive tables */
+table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+}
+
+/* Modal adjustments for mobile */
+.modal-content {
+    width: 95% !important;
+    max-width: 95% !important;
+    padding: var(--mobile-padding) !important;
+    margin: 1rem auto !important; 
+    border-radius: 8px !important;
+}
+
+/* Card and grid adjustments */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.card {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+/* Responsive typography */
+h1 {
+    font-size: 1.75rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+/* Tablet breakpoint */
+@media (min-width: 768px) {
+    html {
+        font-size: 18px;
+    }
+    
+    .container {
+        padding: var(--tablet-padding);
+    }
+    
+    .hide-on-mobile {
+        display: initial !important;
+    }
+    
+    .show-on-mobile {
+        display: none !important;
+    }
+    
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .modal-content {
+        width: 80% !important;
+        max-width: 600px !important;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Desktop breakpoint */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    
+    .modal-content {
+        width: 60% !important;
+        max-width: 800px !important;
+    }
+} 

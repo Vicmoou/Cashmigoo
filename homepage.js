@@ -6,7 +6,7 @@ if (!currentUser) {
 }
 
 // Initialize theme
-ThemeManager.init();
+ThemeManager.init(); 
 
 // Initialize budget data if not exists
 if (!localStorage.getItem(`budgets_${currentUser.id}`)) {
