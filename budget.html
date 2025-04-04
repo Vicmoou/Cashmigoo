@@ -73,9 +73,20 @@
         <main class="budget-container">
             <section class="budget-header">
                 <h1>Budget Planning</h1>
-                <button id="addBudgetBtn" class="action-button add-new">
-                    <i class="fas fa-plus"></i> Set New Budget
-                </button>
+                <div class="header-actions">
+                    <button id="addBudgetBtn" class="action-button add-new">
+                        <i class="fas fa-plus"></i> Set New Budget
+                    </button>
+                    <button id="debugBudgetBtn" class="action-button debug" style="background-color: #6b7280; margin-left: 10px;">
+                        <i class="fas fa-bug"></i> Debug
+                    </button>
+                    <button id="repairBudgetBtn" class="action-button repair" style="background-color: #10b981; margin-left: 10px;">
+                        <i class="fas fa-wrench"></i> Repair
+                    </button>
+                    <button id="resetBudgetBtn" class="action-button reset" style="background-color: #ef4444; margin-left: 10px;">
+                        <i class="fas fa-trash-alt"></i> Reset All
+                    </button>
+                </div>
             </section>
 
             <div class="budget-overview">
@@ -109,6 +120,23 @@
                             <div class="category-warning" style="color: #e74c3c; margin-top: 0.5rem; display: none;">
                                 Please create expense categories first
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="budgetMonth">Month</label>
+                            <select id="budgetMonth" required>
+                                <option value="0">January</option>
+                                <option value="1">February</option>
+                                <option value="2">March</option>
+                                <option value="3">April</option>
+                                <option value="4">May</option>
+                                <option value="5">June</option>
+                                <option value="6">July</option>
+                                <option value="7">August</option>
+                                <option value="8">September</option>
+                                <option value="9">October</option>
+                                <option value="10">November</option>
+                                <option value="11">December</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="budgetAmount">Monthly Limit</label>

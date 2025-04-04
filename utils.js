@@ -89,3 +89,5 @@ const MobileUtils = {
 
 // Expose to global scope
 window.MobileUtils = MobileUtils;
+
+

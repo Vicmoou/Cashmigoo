@@ -3,180 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accounts - Cashmigo</title>
+    <meta name="theme-color" content="#7c3aed">
+    <title>Accounts - Cashmigoo</title>
+    <!-- Add FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local CSS -->
     <link rel="stylesheet" href="homepage.css">
     <link rel="stylesheet" href="accounts.css">
     <link rel="stylesheet" href="modals.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/theme.css">
+    <!-- ThemeManager -->
+    <script src="theme.js"></script>
+    <!-- Utils for Mobile -->
+    <script src="mobile-utils.js"></script>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-logo">Cashmigo</div>
-        <ul class="nav-list">
-            <li class="nav-item">
-                <a href="homepage.html" class="nav-link">
-                    <i class="fas fa-home"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="shopping-list.html" class="nav-link">
-                    <i class="fas fa-shopping-cart"></i> Shopping List
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="accounts.html" class="nav-link active">
-                    <i class="fas fa-wallet"></i> Accounts
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="transactions.html" class="nav-link">
-                    <i class="fas fa-exchange-alt"></i> Transactions
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="categories.html" class="nav-link">
-                    <i class="fas fa-list"></i> Categories
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="budget.html" class="nav-link">
-                    <i class="fas fa-chart-line"></i> Budget
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="debt%20or%20loan.html" class="nav-link">
-                    <i class="fas fa-hand-holding-usd"></i> Debt/Loans
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="reports%20and%20tools.html" class="nav-link">
-                    <i class="fas fa-tools"></i> Reports
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="settings.html" class="nav-link">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" id="logoutBtn" class="nav-link">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </li>
-        </ul>
-    </div>
+    <div class="main-container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-wallet wallet-icon"></i>
+                <span>Cashmigoo</span>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
 
-    <div class="main-content">
-        <main class="accounts-container">
-            <section class="accounts-header">
-                <h1>My Accounts</h1>
-                <button id="addAccountBtn" class="btn-primary">Add New Account</button>
+        <section class="overview-section">
+            <div class="overview-header">
+                <h1 class="overview-title">Accounts</h1>
+                <a href="homepage.html" class="cancel-btn">Back</a>
+            </div>
+
+            <div class="total-balance-card">
+                <div class="balance-title">Total Balance</div>
+                <div class="total-balance" id="totalBalance">$ 0.00</div>
+                <div class="balance-summary">
+                    <div class="balance-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Cash:</span>
+                        <span id="cashBalance">$ 0.00</span>
+                    </div>
+                    <div class="balance-item">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Debt:</span>
+                        <span id="creditBalance">$ 0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <section class="accounts-list-section" id="accountsList">
+                <!-- Account list will be dynamically generated -->
+                <div class="empty-state" id="noAccountsMessage" style="display: none;">
+                    <div class="empty-icon"><i class="fas fa-wallet"></i></div>
+                    <div class="empty-message">No accounts found. Add your first account to get started.</div>
+                </div>
             </section>
 
-            <section class="accounts-grid" id="accountsList"></section>
+            <section class="actions-section">
+                <button id="addAccountBtn" class="action-button">
+                    <i class="fas fa-plus"></i> <span>Add New Account</span>
+                </button>
+            </section>
+        </section>
 
-            <!-- Add Account Modal -->
-            <div id="addAccountModal" class="modal">
-                <div class="modal-content">
-                    <h2>Add New Account</h2>
-                    <form id="addAccountForm">
-                        <div class="form-group">
-                            <label for="accountName">Account Name</label>
-                            <input type="text" id="accountName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="accountType">Account Type</label>
-                            <select id="accountType" required>
-                                <option value="savings">Savings</option>
-                                <option value="credit">Credit Card</option>
-                                <option value="investment">Investment</option>
-                                <option value="Bank">Bank</option>
-                                <option value="Wallet">Wallet</option>
-                                <option value="Visa">Visa</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="initialBalance">Initial Balance</label>
-                            <input type="number" id="initialBalance" step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="accountIcon">Account Icon</label>
-                            <input type="file" id="accountIcon" accept="image/*">
-                        </div>
-                        <div class="modal-buttons">
-                            <button type="submit" class="btn-primary">Create Account</button>
-                            <button type="button" class="btn-secondary" id="closeModal">Cancel</button>
-                            <button type="button" class="btn-danger" id="deleteAccount" style="display: none;">Delete Account</button>
-                        </div>
-                    </form>
-                </div>
+        <!-- Add Account Modal -->
+        <div id="addAccountModal" class="modal">
+            <div class="modal-content">
+                <h2>Add New Account</h2>
+                <form id="addAccountForm">
+                    <input type="hidden" id="editAccountId">
+                    <div class="form-group">
+                        <label for="accountName">Account Name</label>
+                        <input type="text" id="accountName" placeholder="e.g. Checking Account" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="accountType">Account Type</label>
+                        <select id="accountType" required>
+                            <option value="savings">Savings</option>
+                            <option value="checking">Checking</option>
+                            <option value="credit">Credit Card</option>
+                            <option value="investment">Investment</option>
+                            <option value="Bank">Bank</option>
+                            <option value="Wallet">Wallet</option>
+                            <option value="Visa">Visa</option>
+                            <option value="debt">Debt</option>
+                            <option value="loan">Loan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="initialBalance">Initial Balance</label>
+                        <input type="number" id="initialBalance" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="accountIcon">Account Icon</label>
+                        <input type="file" id="accountIcon" accept="image/*">
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-primary">Save Account</button>
+                        <button type="button" class="btn-secondary" id="closeModal">Cancel</button>
+                        <button type="button" class="btn-danger" id="deleteAccount" style="display: none;">Delete Account</button>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <!-- Add Adjust Balance Modal -->
-            <div id="adjustBalanceModal" class="modal">
-                <div class="modal-content">
-                    <h2>Adjust Balance</h2>
-                    <form id="adjustBalanceForm">
-                        <input type="hidden" id="adjustAccountId">
-                        <div class="form-group">
-                            <label for="adjustmentAmount">New Balance</label>
-                            <input type="number" id="adjustmentAmount" step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="adjustmentNote">Note</label>
-                            <input type="text" id="adjustmentNote" placeholder="Reason for adjustment" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="adjustmentIncludeInReports" class="checkbox-label">
-                                <input type="checkbox" id="adjustmentIncludeInReports" checked>
-                                Include in Reports
-                            </label>
-                        </div>
-                        <div class="modal-buttons">
-                            <button type="submit" class="btn-primary">Save</button>
-                            <button type="button" class="btn-secondary" id="closeAdjustModal">Cancel</button>
-                        </div>
-                    </form>
-                </div>
+        <!-- Adjust Balance Modal -->
+        <div id="adjustBalanceModal" class="modal">
+            <div class="modal-content">
+                <h2>Adjust Balance</h2>
+                <form id="adjustBalanceForm">
+                    <input type="hidden" id="adjustAccountId">
+                    <div class="form-group">
+                        <label for="adjustmentAmount">New Balance</label>
+                        <input type="number" id="adjustmentAmount" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adjustmentNote">Note</label>
+                        <input type="text" id="adjustmentNote" placeholder="Reason for adjustment" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adjustmentIncludeInReports" class="checkbox-label">
+                            <input type="checkbox" id="adjustmentIncludeInReports" checked>
+                            Include in Reports
+                        </label>
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-primary">Save</button>
+                        <button type="button" class="btn-secondary" id="closeAdjustModal">Cancel</button>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <!-- Add Transfer Modal -->
-            <div id="transferModal" class="modal">
-                <div class="modal-content">
-                    <h2>Transfer Money</h2>
-                    <form id="transferForm">
-                        <input type="hidden" id="fromAccountId">
-                        <div class="form-group">
-                            <label for="toAccountId">To Account</label>
-                            <select id="toAccountId" required></select>
+        <!-- Transfer Modal -->
+        <div id="transferModal" class="modal">
+            <div class="modal-content">
+                <h2>Transfer Money</h2>
+                <form id="transferForm">
+                    <input type="hidden" id="fromAccountId">
+                    <div class="form-group">
+                        <label for="toAccountId">To Account</label>
+                        <select id="toAccountId" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transferAmount">Amount</label>
+                        <input type="number" id="transferAmount" step="0.01" placeholder="0.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="transferNote">Note</label>
+                        <input type="text" id="transferNote" placeholder="Reason for transfer" required>
+                    </div>
+                    <div class="form-group include-reports-group">
+                        <label for="transferIncludeInReports" class="checkbox-label">
+                            <input type="checkbox" id="transferIncludeInReports" checked>
+                            <span>Include in Reports</span>
+                        </label>
+                        <div class="helper-text">
+                            <i class="fas fa-info-circle"></i>
+                            <span>If checked, this transfer will be included in financial reports</span>
                         </div>
-                        <div class="form-group">
-                            <label for="transferAmount">Amount</label>
-                            <input type="number" id="transferAmount" step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="transferNote">Note</label>
-                            <input type="text" id="transferNote" placeholder="Reason for transfer" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="transferIncludeInReports" class="checkbox-label">
-                                <input type="checkbox" id="transferIncludeInReports" checked>
-                                Include in Reports
-                            </label>
-                        </div>
-                        <div class="modal-buttons">
-                            <button type="submit" class="btn-primary">Transfer</button>
-                            <button type="button" class="btn-secondary" id="closeTransferModal">Cancel</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="submit" class="btn-primary">Transfer</button>
+                        <button type="button" class="btn-secondary" id="closeTransferModal">Cancel</button>
+                    </div>
+                </form>
             </div>
-        </main>
+        </div>
+
+        <!-- Context Menu -->
+        <div id="accountContextMenu" class="context-menu">
+            <ul>
+                <li id="editAccountOption"><i class="fas fa-edit"></i> Edit Account</li>
+                <li id="adjustBalanceOption"><i class="fas fa-balance-scale"></i> Adjust Balance</li>
+                <li id="transferOption"><i class="fas fa-exchange-alt"></i> Transfer Money</li>
+                <li id="deleteAccountOption" class="danger"><i class="fas fa-trash"></i> Delete Account</li>
+            </ul>
+        </div>
     </div>
-    
-    <script src="js/themeManager.js"></script>
+
+    <button class="add-transaction-btn" id="addTransactionBtn">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <nav>
+        <a href="homepage.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="accounts.html" class="nav-item active">
+            <i class="fas fa-wallet"></i>
+            <span>Accounts</span>
+        </a>
+        <a href="transactions.html" class="nav-item">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transactions</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </a>
+    </nav>
+
+    <!-- Local JS -->
     <script src="accounts.js"></script>
 </body>
 </html>

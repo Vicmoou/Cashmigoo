@@ -3,145 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cashmigo - Personal Finance Manager</title>
-    <link rel="stylesheet" href="homepage.css">
-    <link rel="stylesheet" href="css/sidebar.css">
+    <meta name="theme-color" content="#7c3aed">
+    <title>Cashmigoo - Personal Finance App</title>
+    <!-- Add FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/theme.css">
+    <!-- Add Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Local CSS -->
+    <link rel="stylesheet" href="homepage.css">
+    <!-- Modal CSS -->
+    <link rel="stylesheet" href="modals.css">
+    <!-- ThemeManager -->
+    <script src="theme.js"></script>
+    <!-- Utils for Mobile -->
+    <script src="mobile-utils.js"></script>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-logo">Cashmigo</div>
-        <ul class="nav-list">
-            <li class="nav-item">
-                <a href="homepage.html" class="nav-link active">
-                    <i class="fas fa-home"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="shopping-list.html" class="nav-link">
-                    <i class="fas fa-shopping-cart"></i> Shopping List
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="accounts.html" class="nav-link">
-                    <i class="fas fa-wallet"></i> Accounts
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="transactions.html" class="nav-link">
-                    <i class="fas fa-exchange-alt"></i> Transactions
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="categories.html" class="nav-link">
-                    <i class="fas fa-tags"></i> Categories
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="budget.html" class="nav-link">
-                    <i class="fas fa-chart-pie"></i> Budget
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="debt%20or%20loan.html" class="nav-link">
-                    <i class="fas fa-hand-holding-usd"></i> Debt/Loans
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="reports%20and%20tools.html" class="nav-link">
-                    <i class="fas fa-chart-bar"></i> Reports
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="settings.html" class="nav-link">
-                    <i class="fas fa-cog"></i> Settings
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" id="logoutBtn" class="nav-link">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <div class="main-content">
-        <nav class="main-nav">
-            <div class="logo">Cashmigo</div>
-            <div class="currency-selector">
-                <select id="currencySelector">
-                    <option value="USD">$ USD</option>
-                    <option value="EUR">€ EUR</option>
-                    <option value="AOA">Kz AOA</option>
-                    <option value="BRL">R$ BRL</option>
-                </select>
+    <div class="main-container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-wallet wallet-icon"></i>
+                <span>Cashmigoo</span>
             </div>
-            <ul>
-                <li><a href="homepage.html" class="active">Dashboard</a></li>
-                <li><a href="shopping-list.html">Shopping List</a></li>
-                <li><a href="accounts.html">Accounts</a></li>
-                <li><a href="transactions.html">Transactions</a></li>
-                <li><a href="categories.html">Categories</a></li>
-                <li><a href="budget.html">Budget</a></li>
-                <li><a href="debt%20or%20loan.html">Debt/Loans</a></li>
-                <li><a href="reports%20and%20tools.html">Reports</a></li>
-                <li><a href="#" id="logoutBtn">Logout</a></li>
-            </ul>
-        </nav>
-        
-        <main class="dashboard">
-            <section class="summary-cards">
-                <div class="card total-balance glass-effect">
-                    <div class="card-icon">
-                        <svg><!-- Add wallet icon --></svg>
-                    </div>
-                    <h3>Total Balance</h3>
-                    <div class="amount" id="totalBalance">$0.00</div>
-                    <div class="card-trend">
-                        <span class="trend-up">↑ 12%</span> vs last month
-                    </div>
-                </div>
-                <div class="card monthly-income glass-effect">
-                    <div class="card-icon">
-                        <svg><!-- Add income icon --></svg>
-                    </div>
-                    <h3>Monthly Income</h3>
-                    <div class="amount" id="monthlyIncome">$0.00</div>
-                    <div class="card-trend">
-                        <span class="trend-up">↑ 8%</span> vs last month
-                    </div>
-                </div>
-                <div class="card monthly-expenses glass-effect">
-                    <div class="card-icon">
-                        <svg><!-- Add expenses icon --></svg>
-                    </div>
-                    <h3>Monthly Expenses</h3>
-                    <div class="amount" id="monthlyExpenses">$0.00</div>
-                    <div class="card-trend">
-                        <span class="trend-down">↓ 5%</span> vs last month
-                    </div>
-                </div>
-            </section>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
 
-            <section class="charts-section">
-                <div class="card chart-container glass-effect">
-                    <canvas id="expenseChart"></canvas>
-                </div>
-                <div class="card chart-container glass-effect">
-                    <canvas id="balanceChart"></canvas>
-                </div>
-            </section>
+        <section class="overview-section">
+            <div class="overview-header">
+                <h1 class="overview-title">Overview</h1>
+                <div class="period" id="currentPeriod"></div>
+            </div>
 
-            <section class="recent-transactions">
-                <h2>Recent Transactions</h2>
-                <div id="recentTransactionsList"></div>
-            </section>
-        </main>
+            <div class="total-balance-card">
+                <div class="balance-title">Total Balance</div>
+                <div class="total-balance" id="totalBalance">$ 0.00</div>
+                <div class="balance-summary">
+                    <div class="balance-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Cash:</span>
+                        <span id="cashBalance">$ 0.00</span>
+                    </div>
+                    <div class="balance-item">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Debt:</span>
+                        <span id="creditBalance">$ 0.00</span>
+                    </div>
+                </div>
+                
+                <!-- Account list will be dynamically generated -->
+                <div class="user-accounts" id="userAccounts"></div>
+            </div>
+        </section>
+
+        <section class="section" id="spendingSection">
+            <div class="section-header">
+                <h2 class="section-title">Monthly Spending</h2>
+                <div class="period"></div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-wrapper">
+                    <canvas id="spendingChart"></canvas>
+                </div>
+                <div class="chart-legend">
+                    <!-- Legend will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="empty-state" id="noSpendingData" style="display: none;">
+                <div class="empty-icon"><i class="fas fa-chart-pie"></i></div>
+                <div class="empty-message">No spending data for this month.</div>
+                <button class="btn btn-primary" id="addTransactionFromEmptyBtn">Add Transaction</button>
+            </div>
+        </section>
+
+        <section class="budget-section" id="budgetSection">
+            <div class="section-header">
+                <h2 class="budget-title">April Budget</h2>
+                <div class="section-actions">
+                    <button id="refreshBudgetBtn" class="icon-button" title="Refresh Budget">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <a href="budget.html" class="section-link">View All</a>
+                </div>
+            </div>
+            
+            <div class="budget-categories-list" id="budgetCategoriesList">
+                <!-- Category budgets will be displayed here -->
+            </div>
+            
+            <div class="empty-state" id="noBudgetData" style="display: none;">
+                <div class="empty-icon"><i class="fas fa-chart-pie"></i></div>
+                <div class="empty-message">No budget set for this month. Set a budget to track your spending.</div>
+                <button class="action-btn" id="setBudgetBtn">Set Budget</button>
+            </div>
+        </section>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/themeManager.js"></script>
+
+    <button class="add-transaction-btn" id="addTransactionBtn">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <nav>
+        <a href="homepage.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="accounts.html" class="nav-item">
+            <i class="fas fa-wallet"></i>
+            <span>Accounts</span>
+        </a>
+        <a href="transactions.html" class="nav-item">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transactions</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </a>
+    </nav>
+
+    <!-- Local JS -->
     <script src="homepage.js"></script>
+
+    <!-- Add Transaction Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Transaction</h2>
+                <button type="button" class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <form id="addTransactionForm" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="transactionType">Transaction Type</label>
+                    <select id="transactionType" required>
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                        <option value="transfer">Transfer</option>
+                    </select>
+                </div>
+                <div class="form-group" id="accountGroup">
+                    <label for="transactionAccount">Account</label>
+                    <select id="transactionAccount" required>
+                        <!-- Will be populated with user accounts -->
+                    </select>
+                </div>
+                <div class="form-group" id="toAccountGroup" style="display: none;">
+                    <label for="toAccount">To Account</label>
+                    <select id="toAccount" required>
+                        <!-- Will be populated with user accounts -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" required placeholder="What was this transaction for?">
+                </div>
+                <div class="form-group" id="categoryGroup">
+                    <label for="category">Category</label>
+                    <select id="category" required>
+                        <optgroup label="Income Categories" id="incomeCategoryOptions"></optgroup>
+                        <optgroup label="Expense Categories" id="expenseCategoryOptions"></optgroup>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="includeInReports" class="checkbox-label">
+                        <input type="checkbox" id="includeInReports" checked>
+                        Include in Reports
+                    </label>
+                    <div class="helper-text" style="margin-top: 5px; font-size: 0.8rem; color: #64748b;">
+                        Transactions included in reports will appear in the spending chart and budget calculations.
+                    </div>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="btn-secondary" id="cancelTransaction">Cancel</button>
+                    <button type="button" class="btn-primary" id="saveTransaction">Save Transaction</button>
+                </div>
+                <div id="transactionStatus" style="margin-top: 10px; text-align: center; display: none;">
+                    <p class="status-message"></p>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

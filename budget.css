@@ -155,3 +155,31 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
+
+/* Add styles for month display in budget items */
+.budget-month {
+    font-size: 0.85rem;
+    font-weight: normal;
+    color: #6b7280;
+    margin-left: 0.5rem;
+}
+
+.dark-mode .budget-month {
+    color: #9ca3af;
+}
+
+/* Style for month select dropdown */
+#budgetMonth {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234B5563' viewBox='0 0 16 16'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>") no-repeat;
+    background-position: calc(100% - 12px) center;
+    background-color: #fff;
+    padding-right: 30px !important;
+}
+
+.dark-mode #budgetMonth {
+    background-color: #374151;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239CA3AF' viewBox='0 0 16 16'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>");
+}
